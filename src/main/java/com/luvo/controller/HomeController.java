@@ -19,11 +19,11 @@ public class HomeController {
         return "explore";
     }
     
-    @GetMapping("/family-planner")
-    public String familyPlanner(Model model) {
-        model.addAttribute("pageTitle", "Family Planner");
-        return "family-planner";
-    }
+//    @GetMapping("/family-planner")
+//    public String familyPlanner(Model model) {
+//        model.addAttribute("pageTitle", "Family Planner");
+//        return "family-planner";
+//    }
     
     @GetMapping("/business")
     public String business(Model model) {
