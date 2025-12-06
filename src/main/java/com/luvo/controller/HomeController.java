@@ -25,9 +25,9 @@ public class HomeController {
 //        return "family-planner";
 //    }
     
-    @GetMapping("/business")
-    public String business(Model model) {
-        model.addAttribute("pageTitle", "Local Business");
-        return "business";
-    }
+    // @GetMapping("/business")
+    // public String business(Model model) {
+    //     model.addAttribute("pageTitle", "Local Business");
+    //     return "business";
+    // }
 }
