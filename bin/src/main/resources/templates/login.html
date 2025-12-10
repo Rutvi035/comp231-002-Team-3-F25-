@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Login - Luvo</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a th:href="@{/}" class="logo">Luvo</a>
+                <ul class="nav-menu">
+                    <li><a th:href="@{/explore}">Explore</a></li>
+                    <li><a th:href="@{/family-planner}">Family Planner</a></li>
+                    <li><a th:href="@{/itinerary}">Itinerary</a></li>
+                    <li><a th:href="@{/business}">Business</a></li>
+                    <li><a th:href="@{/guide}">Guide</a></li>
+                    <li><a th:href="@{/admin}">Admin</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a th:href="@{/login}" class="btn btn-login active">Login</a>
+                    <a th:href="@{/signup}" class="btn btn-signup">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="auth-section">
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <h1>Welcome Back</h1>
+                        <p>Login to continue your travel journey with Luvo</p>
+                    </div>
+
+                    <!-- Social Login -->
+                   <!-- <div class="social-login">
+                        <button class="social-btn google-btn">
+                            <span class="social-icon">🔵</span>
+                            Continue with Google
+                        </button>
+                        <button class="social-btn facebook-btn">
+                            <span class="social-icon">📘</span>
+                            Continue with Facebook
+                        </button>
+                    </div>
+
+                    <div class="divider">
+                        <span>OR</span>
+                    </div> -->
+
+                    <!-- Login Form -->
+                    <form th:action="@{/login/process}" method="post" class="auth-form">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required 
+                                   placeholder="your.email@example.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" required 
+                                   placeholder="Enter your password">
+                        </div>
+
+                        <div class="form-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="remember">
+                                <span>Remember me</span>
+                            </label>
+                            <a th:href="@{/forgot-password}" class="forgot-link">Forgot Password?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-submit">Login</button>
+                    </form>
+
+                    <div class="auth-footer">
+                        <p>Don't have an account? <a th:href="@{/signup}">Sign Up</a></p>
+                    </div>
+                </div>
+
+                <!-- Info Side Panel -->
+                <div class="auth-info">
+                    <div class="info-content">
+                        <h2>Start Your Adventure</h2>
+                        <div class="info-features">
+                            <div class="info-item">
+                                <span class="info-icon">✈️</span>
+                                <div>
+                                    <h3>Explore Destinations</h3>
+                                    <p>Discover amazing places around the world</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">💰</span>
+                                <div>
+                                    <h3>Plan Your Budget</h3>
+                                    <p>Track expenses and collaborate with family</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">📅</span>
+                                <div>
+                                    <h3>Create Itineraries</h3>
+                                    <p>Organize your perfect trip schedule</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">⭐</span>
+                                <div>
+                                    <h3>Save Favorites</h3>
+                                    <p>Bookmark your dream destinations</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Luvo. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

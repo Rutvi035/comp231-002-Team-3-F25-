@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Luvo - Redefining Travel Experiences</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a th:href="@{/}" class="logo">Luvo</a>
+                <ul class="nav-menu">
+                    <li><a th:href="@{/explore}">Explore</a></li>
+                    <li><a th:href="@{/family-planner}">Family Planner</a></li>
+                    <li><a th:href="@{/itinerary}">Itinerary</a></li>
+                    <li><a th:href="@{/business}">Business</a></li>
+                    <li><a th:href="@{/guide}">Guide</a></li>
+                    <li><a th:href="@{/admin}">Admin</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a th:href="@{/login}" class="btn btn-login">Login</a>
+                    <a th:href="@{/signup}" class="btn btn-signup">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">Redefining Travel Experiences</h1>
+            <p class="hero-subtitle">
+                Explore destinations, compare options, and plan<br>
+                itineraries — all in one place.
+            </p>
+            
+            <div class="search-bar">
+                <button class="tab-btn active">Explore Trips</button>
+                <input type="text" placeholder="Select..." class="search-input">
+                <button class="btn btn-search">Search</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Role Cards Section -->
+    <section class="roles">
+        <div class="container">
+            <h2 class="section-title">Start by role</h2>
+            <div class="role-grid">
+                <!-- Student Explorer Card -->
+                <div class="role-card card-blue">
+                    <h3 class="role-title">Student Explorer</h3>
+                    <p class="role-description">Find affordable trips and compare options</p>
+                    <a th:href="@{/explore}" class="btn btn-role">Start Exploring</a>
+                </div>
+
+                <!-- Family Planner Card -->
+                <div class="role-card card-yellow">
+                    <h3 class="role-title">Family Planner</h3>
+                    <p class="role-description">Track budgets and collaborate with family</p>
+                    <a th:href="@{/family-planner}" class="btn btn-role btn-planner">Open Planner</a>
+                </div>
+
+                <!-- Local Business Card -->
+                <div class="role-card card-green">
+                    <h3 class="role-title">Local Business</h3>
+                    <p class="role-description">List services travelers can book</p>
+                    <a th:href="@{/business}" class="btn btn-role">Manage Listings</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
