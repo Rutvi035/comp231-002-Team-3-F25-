@@ -13,8 +13,8 @@ body {
 
 /* --- New Header Styling --- */
 .app-header {
-    background: #c9f0e8; /* Matches body background */
-    padding: 40px 20px 0 20px; /* Top padding, no bottom padding */
+    background: #c9f0e8; 
+    padding: 40px 20px 0 20px;
     text-align: center;
 }
 .app-header h1 {
@@ -27,7 +27,7 @@ body {
     font-size: 1.2em;
     color: #333;
     margin: 0;
-    padding-bottom: 30px; /* Space below the subtitle */
+    padding-bottom: 30px;
 }
 /* ------------------------- */
 
@@ -94,15 +94,17 @@ input {
     border-radius: 6px;
 }
 
-.set-btn, .view-btn {
+
+.set-btn, .view-btn, .delete-btn {
     background: #0b637b;
     color: white;
-    padding: 10px 24px;
+    padding: 8px 20px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    width: 100%;
+    width: auto;
 }
+
 
 .full-width-section {
     max-width: 1200px;
@@ -132,11 +134,6 @@ input {
     font-size: 1.1em;
 }
 
-.view-btn {
-    width: auto; 
-    padding: 8px 20px;
-}
-
 label {
     display:inline-block;
     width:100px;
@@ -151,6 +148,7 @@ label {
 }
 </style>
 </head>
+
 <body>
 
 <header class="app-header">
@@ -172,8 +170,7 @@ label {
                 <button class="set-btn" type="submit">Add Trip</button>
             </form>
         </div>
-
-        </div>
+    </div>
 
     <div class="right-column">
         <div class="card budget" id="budgetCard">
@@ -194,11 +191,17 @@ label {
     <div id="tripList"></div>
 </div>
 
+</body>
+</html>
+
+
+
+
 
 <script>
 const apiBase = 'http://localhost:8080/family-planner/api';
 
-// Fetch and render trips
+// Load all trips
 async function loadTrips() {
     try {
         const res = await fetch(apiBase);
@@ -209,7 +212,7 @@ async function loadTrips() {
     }
 }
 
-// Render trips in the page
+// Render trips on screen
 function renderTrips(trips) {
     const tripList = document.getElementById('tripList');
     tripList.innerHTML = '';
@@ -217,20 +220,25 @@ function renderTrips(trips) {
     trips.forEach((trip, index) => {
         const card = document.createElement('div');
         card.className = 'card trip-card';
+
         card.innerHTML = `
             <div class="trip-info">
-                <strong>${trip.tripName}</strong>
-                <span>| Status: ${trip.status}</span>
-                <span>| Budget: $${trip.budget.toFixed(2)}</span>
+                <div class="trip-title">${trip.tripName}</div>
+                <div class="trip-sub">
+                    Status: <strong>${trip.status}</strong> | 
+                    Budget: <strong>$${trip.budget.toFixed(2)}</strong>
+                </div>
             </div>
+
             <div class="button-group">
                 <button class="view-btn">View</button>
-                <button class="view-btn delete-btn">Delete</button>
+                <button class="delete-btn">Delete</button>
             </div>
         `;
+
         tripList.appendChild(card);
 
-        // View button
+        // VIEW button
         card.querySelector('.view-btn').addEventListener('click', () => {
             document.querySelector('#budgetForm input[name="index"]').value = index;
             document.querySelector('#budgetForm input[name="flights"]').value = trip.flights;
@@ -239,10 +247,11 @@ function renderTrips(trips) {
             document.querySelector('#budgetForm input[name="activities"]').value = trip.activities;
         });
 
-        // Delete button
+        // DELETE button
         card.querySelector('.delete-btn').addEventListener('click', async () => {
             try {
                 await fetch(`${apiBase}/${index}`, { method: 'DELETE' });
+                alert("Trip deleted!");
                 loadTrips();
             } catch (err) {
                 console.error('Error deleting trip:', err);
@@ -250,28 +259,17 @@ function renderTrips(trips) {
         });
     });
 
-
-
-    // Update total budget
+    // Update total budget circle
     const total = trips.reduce((sum, t) => sum + (t.budget || 0), 0);
-    document.getElementById('totalBudget').innerHTML = `Total<br>$${total.toFixed(2)}`;
-
-    // Adjust card heights
-    const createCard = document.getElementById('createCard');
-    const budgetCard = document.getElementById('budgetCard');
-    if (window.innerWidth > 900) {
-        createCard.style.height = budgetCard.style.height = 'auto';
-        const maxHeight = Math.max(createCard.offsetHeight, budgetCard.offsetHeight);
-        createCard.style.height = budgetCard.style.height = maxHeight + 'px';
-    } else {
-        createCard.style.height = budgetCard.style.height = 'auto';
-    }
+    document.getElementById('totalBudget').innerHTML =
+        `Total<br>$${total.toFixed(2)}`;
 }
 
 // Add new trip
 document.querySelector('#addTripForm').addEventListener('submit', async e => {
     e.preventDefault();
     const form = e.target;
+
     const tripName = form.tripName.value;
     const budget = parseFloat(form.budget.value) || 0;
 
@@ -298,25 +296,45 @@ document.querySelector('#addTripForm').addEventListener('submit', async e => {
     }
 });
 
-// Update budget
+// Update budget + alerts + status change
 document.querySelector('#budgetForm').addEventListener('submit', async e => {
     e.preventDefault();
     const form = e.target;
     const index = form.index.value;
+
+    const flights = parseFloat(form.flights.value) || 0;
+    const lodging = parseFloat(form.lodging.value) || 0;
+    const food = parseFloat(form.food.value) || 0;
+    const activities = parseFloat(form.activities.value) || 0;
+
+    const totalSpent = flights + lodging + food + activities;
+
+    const trips = await (await fetch(apiBase)).json();
+    const tripBudget = trips[index].budget;
+
+    let newStatus = totalSpent > tripBudget ? "Locked" : "Planning";
 
     try {
         await fetch(`${apiBase}/${index}/budget`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                flights: parseFloat(form.flights.value) || 0,
-                lodging: parseFloat(form.lodging.value) || 0,
-                food: parseFloat(form.food.value) || 0,
-                activities: parseFloat(form.activities.value) || 0
+                flights,
+                lodging,
+                food,
+                activities,
+                status: newStatus
             })
         });
-        alert('Budget updated!');
+
+        if (totalSpent > tripBudget) {
+            alert("⚠️ Budget Exceeded!");
+        } else {
+            alert("Budget Updated Successfully!");
+        }
+
         loadTrips();
+
     } catch (err) {
         console.error('Error updating budget:', err);
     }
@@ -324,13 +342,7 @@ document.querySelector('#budgetForm').addEventListener('submit', async e => {
 
 // Initial load
 loadTrips();
-
-// Adjust card height on resize
-window.addEventListener('resize', loadTrips);
 </script>
-
-
-
 
 </body>
 </html>
