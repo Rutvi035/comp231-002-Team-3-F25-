@@ -296,7 +296,7 @@ body {
     font-weight: 600;
     cursor: pointer;
 }
-.summary-primary-btn:hover {
+.summary-primary-btn:hover { 
     filter: brightness(0.95);
 }
 

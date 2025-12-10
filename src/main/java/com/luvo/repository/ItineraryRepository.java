@@ -8,3 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface ItineraryRepository extends MongoRepository<Itinerary, String> {
     // default CRUD methods are enough
 }
+
