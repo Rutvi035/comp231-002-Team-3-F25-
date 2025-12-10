@@ -4,55 +4,100 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Explorer</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="../static/css/explorer.css" />
+    <!-- Global Luvo styles -->
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" th:href="@{/css/explorer.css}" />
   </head>
+
   <body>
     <!-- Temporary Navbar -->
-    <nav class="temp-navbar">Luvo &nbsp;|&nbsp; Student Explorer</nav>
+    <nav class="temp-navbar">
+      <a th:href="@{/}" class="logo">Luvo</a> &nbsp;|&nbsp; Student Explorer
+    </nav>
 
     <!-- Header -->
     <header class="hero">
       <h1>Explore Trips</h1>
 
       <div class="filters">
-        <input type="text" placeholder="Destination" />
-        <input type="date" />
-        <select>
-          <option>Any type</option>
-          <option>Beach</option>
-          <option>Mountains</option>
-          <option>City</option>
+        <input id="destinationInput" type="text" placeholder="Destination" />
+        <input id="dateInput" type="date" />
+        <select id="typeInput">
+          <option value="Any type">Any type</option>
+          <option value="Beach">Beach</option>
+          <option value="Mountains">Mountains</option>
+          <option value="City">City</option>
         </select>
-        <button class="apply-btn">Apply</button>
+        <button class="apply-btn" id="filterBtn">Apply</button>
       </div>
     </header>
 
     <!-- Trip Cards -->
     <section class="cards-section">
-      <div class="card">
-        <h3>Trip Title</h3>
-        <p class="price">$850</p>
-        <p class="details">4-night • 4.4 star</p>
-        <a href="#" class="view-link">View Details</a>
-        <button class="cta-btn">View Details</button>
-      </div>
-
-      <div class="card">
-        <h3>Trip Title</h3>
-        <p class="price">$600</p>
-        <p class="details">2-night • 4.4 beach</p>
-        <a href="#" class="view-link">View Details</a>
-        <button class="cta-btn">Add to Itinerary</button>
-      </div>
-
-      <div class="card">
-        <h3>Trip Title</h3>
-        <p class="price">$950</p>
-        <p class="details">5-night • 4.8 mountains</p>
-        <a href="#" class="view-link">View Details</a>
-        <button class="cta-btn">Add to Itinerary</button>
+      <div class="cards-container" id="cardsContainer">
+        <!-- Trip cards will be dynamically inserted here -->
       </div>
     </section>
+
+    <script>
+      const API_URL = "http://localhost:8082/explore/api";
+
+      // Load all trips when the page starts
+      document.addEventListener("DOMContentLoaded", loadTrips);
+      document
+        .getElementById("filterBtn")
+        .addEventListener("click", applyFilters);
+
+      async function loadTrips() {
+        try {
+          const res = await fetch(API_URL);
+          const trips = await res.json();
+          renderTrips(trips);
+        } catch (err) {
+          console.error("Error loading trips:", err);
+        }
+      }
+
+      async function applyFilters() {
+        const destination = document.getElementById("destinationInput").value;
+        const type = document.getElementById("typeInput").value;
+
+        let url = `${API_URL}?`;
+
+        if (destination) url += `destination=${destination}&`;
+        if (type !== "Any type") url += `type=${type}`;
+
+        try {
+          const res = await fetch(url);
+          const trips = await res.json();
+          renderTrips(trips);
+        } catch (err) {
+          console.error("Error applying filters:", err);
+        }
+      }
+
+      function renderTrips(trips) {
+        const container = document.getElementById("cardsContainer");
+        container.innerHTML = "";
+
+        if (trips.length === 0) {
+          container.innerHTML = "<p>No trips found. Try other filters.</p>";
+          return;
+        }
+
+        trips.forEach((t) => {
+          container.innerHTML += `
+            <div class="card">
+              <img src="${t.imageUrl}" alt="${t.title}" class="card-img"/>
+              <h3>${t.title}</h3>
+              <p class="price">$${t.price}</p>
+              <p class="details">${t.details}</p>
+              <button class="cta-btn">View Details</button>
+            </div>
+          `;
+        });
+      }
+    </script>
   </body>
 </html>
