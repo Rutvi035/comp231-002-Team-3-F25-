@@ -23,11 +23,14 @@
       <div class="filters">
         <input id="destinationInput" type="text" placeholder="Destination" />
         <input id="dateInput" type="date" />
-        <select id="typeInput">
+          <select id="typeInput">
           <option value="Any type">Any type</option>
           <option value="Beach">Beach</option>
           <option value="Mountains">Mountains</option>
           <option value="City">City</option>
+          <option value="Hotel">Hotel</option>
+          <option value="Airbnb">Airbnb</option>
+          <option value="Activity">Activity</option>
         </select>
         <button class="apply-btn" id="filterBtn">Apply</button>
       </div>
@@ -41,7 +44,7 @@
     </section>
 
     <script>
-      const API_URL = "http://localhost:8082/explore/api";
+      const API_URL = "/explore/api";
 
       // Load all trips when the page starts
       document.addEventListener("DOMContentLoaded", loadTrips);
@@ -56,6 +59,28 @@
           renderTrips(trips);
         } catch (err) {
           console.error("Error loading trips:", err);
+        }
+      }
+
+      async function bookActivity(tourId, btn) {
+        try {
+          btn.disabled = true;
+          const res = await fetch(`/guide/api/${tourId}/book`, { method: 'POST' });
+          const text = await res.text();
+          if (text === 'BOOKED') {
+            btn.textContent = 'Booked';
+            btn.disabled = true;
+          } else if (text === 'NO_SEATS') {
+            btn.textContent = 'Full';
+            btn.disabled = true;
+          } else {
+            btn.textContent = 'Error';
+            btn.disabled = false;
+          }
+        } catch (e) {
+          console.error(e);
+          btn.textContent = 'Error';
+          btn.disabled = false;
         }
       }
 
@@ -87,13 +112,19 @@
         }
 
         trips.forEach((t) => {
+          const priceRange = t.priceRange ? `<p class="price-range" style="margin:4px 0;color:#444">${t.priceRange}</p>` : '';
+          const price = (t.price && t.price > 0) ? `<p class="price">$${t.price}</p>` : '';
+          const bookBtn = (t.type && t.type.toLowerCase()==='activity' && t.metaId)
+            ? `<button class="cta-btn" onclick="bookActivity('${t.metaId}', this)">Book</button>`
+            : `<button class="cta-btn">View Details</button>`;
           container.innerHTML += `
             <div class="card">
               <img src="${t.imageUrl}" alt="${t.title}" class="card-img"/>
-              <h3>${t.title}</h3>
-              <p class="price">$${t.price}</p>
+              <h3 style="margin:8px 0">${t.title}</h3>
+              ${priceRange}
+              ${price}
               <p class="details">${t.details}</p>
-              <button class="cta-btn">View Details</button>
+              ${bookBtn}
             </div>
           `;
         });
