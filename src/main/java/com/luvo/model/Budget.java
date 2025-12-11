@@ -1,6 +1,14 @@
 package com.luvo.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "budgets")
 public class Budget {
+
+    @Id
+    private String id;
+
     private double flights = 0;
     private double lodging = 0;
     private double food = 0;

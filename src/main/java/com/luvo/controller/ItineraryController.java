@@ -16,7 +16,7 @@ import java.util.List;
  * - Provides REST API for CRUD operations
  */
 @Controller
-@RequestMapping
+@RequestMapping("/itinerary")
 public class ItineraryController {
 
     private final ItineraryService itineraryService;
@@ -29,7 +29,7 @@ public class ItineraryController {
     // 🔹 1. THYMELEAF PAGE ROUTE (FRONTEND)
     // --------------------------------------
 
-    @GetMapping("/itinerary")
+    @GetMapping
     public String showItineraryPage(Model model) {
         model.addAttribute("pageTitle", "Itinerary Builder - Luvo");
         return "itinerary";   // loads templates/itinerary.html
@@ -41,13 +41,13 @@ public class ItineraryController {
     // -------------------------------------------------------
 
     @ResponseBody
-    @GetMapping("/api/itineraries")
+    @GetMapping("/allItinineraries")
     public List<Itinerary> getAllItineraries() {
         return itineraryService.findAll();
     }
 
     @ResponseBody
-    @GetMapping("/api/itineraries/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Itinerary> getItineraryById(@PathVariable String id) {
         return itineraryService.findById(id)
                 .map(ResponseEntity::ok)
@@ -55,14 +55,14 @@ public class ItineraryController {
     }
 
     @ResponseBody
-    @PostMapping("/api/itineraries")
+    @PostMapping
     public ResponseEntity<Itinerary> createItinerary(@RequestBody Itinerary itinerary) {
         Itinerary saved = itineraryService.save(itinerary);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @ResponseBody
-    @PutMapping("/api/itineraries/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Itinerary> updateItinerary(
             @PathVariable String id,
             @RequestBody Itinerary request) {
@@ -77,7 +77,7 @@ public class ItineraryController {
     }
 
     @ResponseBody
-    @DeleteMapping("/api/itineraries/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteItinerary(@PathVariable String id) {
         itineraryService.delete(id);
         return ResponseEntity.noContent().build();
