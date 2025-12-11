@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.luvo.model.Trip;
 import com.luvo.model.LocalBusiness;
 import com.luvo.model.Tour;
-import com.luvo.service.TourService;
 
 @Service
 public class StudentExplorerService {
@@ -29,57 +28,59 @@ public class StudentExplorerService {
         trips.add(new Trip("Rocky Mountains Hike", 950, "5-night • 4.8 mountains", "Alberta", "Mountains", "images/rocky_mountains.jpg"));
     }
 
-        public List<Trip> getTrips(String destination, String type) {
+    /**
+     * Main filter method for Student Explorer
+     */
+    public List<Trip> getTrips(String destination, String type) {
+
+        // 1) HOTEL / AIRBNB FILTER → LocalBusiness mapped to Trip
         if (type != null && (type.equalsIgnoreCase("Hotel") || type.equalsIgnoreCase("Airbnb"))) {
-            // Map local business listings categorized as hotels or airbnbs into Trip objects
             return localBusinessService.findAll().stream()
-                .filter(b -> b.getCategory() != null && (
-                    b.getCategory().toLowerCase().contains("hotel") ||
-                    b.getCategory().toLowerCase().contains("airbnb")
-                ))
-                .filter(b -> destination == null || destination.isEmpty() || (
-                    (b.getName() != null && b.getName().toLowerCase().contains(destination.toLowerCase())) ||
-                    (b.getDescription() != null && b.getDescription().toLowerCase().contains(destination.toLowerCase()))
-                ))
+                .filter(b -> b.getCategory() != null &&
+                        (b.getCategory().equalsIgnoreCase("Hotel") ||
+                         b.getCategory().equalsIgnoreCase("Airbnb")))
+                .filter(b -> destination == null || destination.isEmpty() ||
+                        (b.getName() != null && b.getName().toLowerCase().contains(destination.toLowerCase())) ||
+                        (b.getDescription() != null && b.getDescription().toLowerCase().contains(destination.toLowerCase())))
                 .map(this::businessToTrip)
                 .collect(Collectors.toList());
         }
 
-            // If Activity explicitly requested, return only mapped tours
-            if (type != null && type.equalsIgnoreCase("Activity")) {
-                return tourService.getTours().stream()
-                    .map(this::tourToTrip)
-                    .filter(t -> destination == null || destination.isEmpty() || (
-                        (t.getDestination() != null && t.getDestination().toLowerCase().contains(destination.toLowerCase())) ||
-                        (t.getDetails() != null && t.getDetails().toLowerCase().contains(destination.toLowerCase()))
-                    ))
-                    .collect(Collectors.toList());
-            }
-
-            // Default: include sample trips plus tours so tours show up without selecting anything
-            java.util.List<Trip> results = new java.util.ArrayList<>();
-            results.addAll(trips.stream()
-                .filter(t -> destination == null || destination.isEmpty() || t.getDestination().toLowerCase().contains(destination.toLowerCase()))
-                .filter(t -> type == null || type.equals("Any type") || t.getType().equalsIgnoreCase(type))
-                .collect(Collectors.toList()));
-
-            // add tours (mapped to Trip) as Activities
-            results.addAll(tourService.getTours().stream()
+        // 2) ACTIVITY FILTER → Tours mapped to Trip
+        if (type != null && type.equalsIgnoreCase("Activity")) {
+            return tourService.getTours().stream()
                 .map(this::tourToTrip)
-                .filter(t -> destination == null || destination.isEmpty() || (
-                    (t.getDestination() != null && t.getDestination().toLowerCase().contains(destination.toLowerCase())) ||
-                    (t.getDetails() != null && t.getDetails().toLowerCase().contains(destination.toLowerCase()))
-                ))
-                .collect(Collectors.toList()));
-
-            return results;
-
-        return trips.stream()
-                .filter(t -> destination == null || destination.isEmpty() || t.getDestination().toLowerCase().contains(destination.toLowerCase()))
-                .filter(t -> type == null || type.equals("Any type") || t.getType().equalsIgnoreCase(type))
+                .filter(t -> destination == null || destination.isEmpty() ||
+                        (t.getDestination() != null && t.getDestination().toLowerCase().contains(destination.toLowerCase())) ||
+                        (t.getDetails() != null && t.getDetails().toLowerCase().contains(destination.toLowerCase())))
                 .collect(Collectors.toList());
+        }
+
+        // 3) DEFAULT → Sample trips + ALL tours
+        List<Trip> results = new ArrayList<>();
+
+        // Add sample trips
+        results.addAll(trips.stream()
+            .filter(t -> destination == null || destination.isEmpty() ||
+                    t.getDestination().toLowerCase().contains(destination.toLowerCase()))
+            .filter(t -> type == null || type.equals("Any type") ||
+                    t.getType().equalsIgnoreCase(type))
+            .collect(Collectors.toList()));
+
+        // Add tours mapped to Trip → displayed as "Activities"
+        results.addAll(tourService.getTours().stream()
+            .map(this::tourToTrip)
+            .filter(t -> destination == null || destination.isEmpty() ||
+                    (t.getDestination() != null && t.getDestination().toLowerCase().contains(destination.toLowerCase())) ||
+                    (t.getDetails() != null && t.getDetails().toLowerCase().contains(destination.toLowerCase())))
+            .collect(Collectors.toList()));
+
+        return results;
     }
 
+    /**
+     * Returns a Trip by ID from the sample list.
+     */
     public Trip getTrip(Long id) {
         return trips.stream()
                 .filter(t -> t.getId().equals(id))
@@ -87,6 +88,7 @@ public class StudentExplorerService {
                 .orElseThrow(() -> new RuntimeException("Trip not found"));
     }
 
+    // Convert LocalBusiness → Trip object
     private Trip businessToTrip(LocalBusiness b) {
         String title = b.getName() == null ? "Hotel" : b.getName();
         double price = parsePriceRange(b.getPriceRange());
@@ -94,66 +96,73 @@ public class StudentExplorerService {
         String destination = b.getName();
         String type = "Hotel";
         String imageUrl = b.getImagePath() != null ? b.getImagePath() : "images/hotel_placeholder.jpg";
-        // create trip and carry textual priceRange separately so UI can render it under the name
+
         Trip trip = new Trip(title, price, details, destination, type, imageUrl);
         trip.setPriceRange(b.getPriceRange());
         return trip;
     }
 
+    // Convert Tour → Trip object (Activity)
     private Trip tourToTrip(Tour t) {
         String title = t.getTitle() == null ? "Activity" : t.getTitle();
-        double price = 0; // Tours currently have no price field; keep 0 or extend model later
+        double price = 0;
         String details = t.getLocation() == null ? "Activity" : t.getLocation();
         String destination = t.getLocation();
         String type = "Activity";
         String imageUrl = "images/activity_placeholder.jpg";
+
         Trip trip = new Trip(title, price, details, destination, type, imageUrl);
         trip.setMetaId(t.getId());
         return trip;
     }
 
-    // Convert a priceRange string like "$ - $$" or "$$" into a representative numeric price
+    /**
+     * Converts priceRange like "$-$" or "$$" into numeric estimated price.
+     */
     private double parsePriceRange(String pr) {
         if (pr == null || pr.isBlank()) return 0.0;
         try {
             String s = pr.trim();
 
-            // 1) If there are explicit numbers (e.g. "20", "20-50", "$30"), extract and average them
-            java.util.regex.Matcher numMatcher = java.util.regex.Pattern.compile("\\d+(?:\\.\\d+)?").matcher(s);
-            java.util.List<Double> nums = new java.util.ArrayList<>();
-            while (numMatcher.find()) {
-                nums.add(Double.parseDouble(numMatcher.group()));
-            }
+            // Extract numbers if present
+            java.util.regex.Matcher numMatcher =
+                    java.util.regex.Pattern.compile("\\d+(?:\\.\\d+)?").matcher(s);
+
+            List<Double> nums = new ArrayList<>();
+            while (numMatcher.find()) nums.add(Double.parseDouble(numMatcher.group()));
             if (!nums.isEmpty()) {
                 double sum = 0;
                 for (double d : nums) sum += d;
                 return sum / nums.size();
             }
 
-            // 2) Fallback to $-count heuristic (e.g. "$ - $$")
-            java.util.regex.Matcher dollarMatcher = java.util.regex.Pattern.compile("\\$+", java.util.regex.Pattern.CASE_INSENSITIVE).matcher(s);
-            java.util.List<Integer> counts = new java.util.ArrayList<>();
+            // Fallback to $ count
+            java.util.regex.Matcher dollarMatcher =
+                    java.util.regex.Pattern.compile("\\$+", java.util.regex.Pattern.CASE_INSENSITIVE).matcher(s);
+
+            List<Integer> counts = new ArrayList<>();
             while (dollarMatcher.find()) counts.add(dollarMatcher.group().length());
+
             if (!counts.isEmpty()) {
-                java.util.function.Function<Integer, Double> mapCount = (count) -> {
-                    switch (count) {
-                        case 1: return 50.0;
-                        case 2: return 100.0;
-                        case 3: return 200.0;
-                        default: return 100.0;
-                    }
-                };
                 double sum = 0;
-                for (int c : counts) sum += mapCount.apply(c);
+                for (int c : counts) {
+                    switch (c) {
+                        case 1: sum += 50; break;
+                        case 2: sum += 100; break;
+                        case 3: sum += 200; break;
+                        default: sum += 100;
+                    }
+                }
                 return sum / counts.size();
             }
 
-            // 3) If keywords like 'cheap'/'expensive' appear
+            // Keyword fallback
             String low = s.toLowerCase();
             if (low.contains("cheap") || low.contains("budget") || low.contains("low")) return 50.0;
             if (low.contains("expensive") || low.contains("luxury") || low.contains("high")) return 200.0;
 
             return 0.0;
+
         } catch (Exception e) {
             return 0.0;
         }
