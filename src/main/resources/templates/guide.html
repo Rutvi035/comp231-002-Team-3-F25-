@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Luvo - Tour Guide</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h1 class="mb-4">Tour Guide — Manage Tours</h1>
+
+    <!-- Acceptance Criteria card removed as requested -->
+
+    <!-- Add Tour Form (Bootstrap-styled) -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Add / Manage Tours</h5>
+            <form id="tourForm">
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" id="title" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Location</label>
+                    <input type="text" id="location" class="form-control" required>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-md-6">
+                        <label class="form-label">Start</label>
+                        <input type="datetime-local" id="startTime" class="form-control" required>
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <label class="form-label">End</label>
+                        <input type="datetime-local" id="endTime" class="form-control" required>
+                    </div>
+                </div>
+                <div class="mb-3 col-md-3 p-0">
+                    <label class="form-label">Capacity</label>
+                    <input type="number" id="capacity" class="form-control" min="1" value="10" required>
+                </div>
+
+                <div class="mt-3">
+                    <button type="button" class="btn btn-primary" onclick="submitTour()">Save Tour</button>
+                    <span id="tourStatus" class="ms-3 text-danger"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tours list -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Available Experiences</h5>
+            <div id="toursContainer"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API = '/guide/api';
+
+    async function loadTours() {
+        const res = await fetch(API);
+        const tours = await res.json();
+        const c = document.getElementById('toursContainer');
+        if (!Array.isArray(tours) || tours.length === 0) {
+            c.innerHTML = '<p>No tours yet.</p>';
+            return;
+        }
+        c.innerHTML = '<div class="list-group">' + tours.map(t => `\
+            <div class="list-group-item">\
+              <div class="d-flex w-100 justify-content-between">\
+                <h5 class="mb-1">${t.title}</h5>\
+                <small>${t.location}</small>\
+              </div>\
+              <p class="mb-1">${t.startTime} → ${t.endTime}</p>\
+              <small>Capacity: ${t.capacity}</small>\
+              <div class="mt-2">\
+                <button class="btn btn-sm btn-danger" onclick="deleteTour('${t.id}')">Cancel</button>\
+              </div>\
+            </div>`).join('') + '</div>';
+    }
+
+    async function submitTour() {
+        const status = document.getElementById('tourStatus');
+        status.textContent = '';
+        const payload = {
+            title: document.getElementById('title').value,
+            location: document.getElementById('location').value,
+            startTime: document.getElementById('startTime').value,
+            endTime: document.getElementById('endTime').value,
+            capacity: parseInt(document.getElementById('capacity').value || '0', 10)
+        };
+
+        // Client-side overlap check: fetch existing tours and compare times
+        try {
+            const existingRes = await fetch(API);
+            const existing = await existingRes.json();
+            const newStart = new Date(payload.startTime);
+            const newEnd = new Date(payload.endTime);
+            for (const ex of existing) {
+                const exStart = new Date(ex.startTime);
+                const exEnd = new Date(ex.endTime);
+                // overlap condition: newStart < exEnd && newEnd > exStart
+                if (newStart < exEnd && newEnd > exStart) {
+                    // show alert and abort submission
+                    alert('Time conflict: the new tour overlaps an existing tour ("' + ex.title + '").');
+                    status.textContent = 'Date conflict: overlapping booking.';
+                    return;
+                }
+            }
+        } catch (err) {
+            // if client-side check fails, continue to server-side validation
+            console.warn('Could not perform client-side overlap check:', err);
+        }
+
+        try {
+            const res = await fetch(API, {
+                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
+            });
+            const text = await res.text();
+            if (text === 'DATE_CONFLICT') {
+                status.textContent = 'Date conflict: overlapping booking.';
+            } else if (text === 'SUCCESS') {
+                status.style.color = 'green';
+                status.textContent = 'Saved.';
+                setTimeout(()=> { status.textContent = ''; status.style.color='red'; }, 1200);
+                loadTours();
+            } else {
+                status.textContent = 'Error saving tour.';
+            }
+        } catch (e) {
+            status.textContent = 'Network error';
+        }
+    }
+
+    async function deleteTour(id) {
+        try {
+            await fetch(API + '/' + id, { method: 'DELETE' });
+            // Note: in a real system you would also notify travelers here
+            loadTours();
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadTours);
+</script>
+
+</body>
+</html>

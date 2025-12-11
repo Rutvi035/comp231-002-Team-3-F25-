@@ -58,7 +58,11 @@
 
                 <div class="col-md-6">
                     <label>Category</label>
-                    <input class="form-control" th:field="*{category}">
+                    <select class="form-select" th:field="*{category}">
+                        <option value="">Select...</option>
+                        <option value="Hotel">Hotel</option>
+                        <option value="Airbnb">Airbnb</option>
+                    </select>
                     <div class="text-danger" th:errors="*{category}"></div>
                 </div>
             </div>
@@ -71,7 +75,7 @@
 
             <div class="mb-3">
                 <label>Image</label>
-                <input type="file" name="imageFile" class="form-control" th:attr="required=${!editing}">
+                <input type="file" name="imageFile" class="form-control" th:required="${!editing}">
                 <div class="text-danger" th:errors="*{imagePath}"></div>
             </div>
 
@@ -116,8 +120,8 @@
                 <p class="fw-bold" th:text="${b.priceRange}"></p>
 
                 <div class="d-flex justify-content-between mt-3">
-                    <a th:href="@{'/business/edit/' + ${b.id}}" class="btn btn-sm btn-primary">Edit</a>
-                    <a th:href="@{'/business/delete/' + ${b.id}}" class="btn btn-sm btn-danger">Delete</a>
+                    <a th:href="@{/business/edit/{id}(id=${b.id})}" class="btn btn-sm btn-primary">Edit</a>
+                    <a th:href="@{/business/delete/{id}(id=${b.id})}" class="btn btn-sm btn-danger">Delete</a>
                 </div>
             </div>
         </div>
