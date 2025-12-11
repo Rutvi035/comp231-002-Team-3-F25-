@@ -16,7 +16,7 @@ public class HomeController {
     @GetMapping("/explore")
     public String explore(Model model) {
         model.addAttribute("pageTitle", "Explore Destinations");
-        return "explore";
+        return "student-explorer";
     }
     
 //    @GetMapping("/family-planner")

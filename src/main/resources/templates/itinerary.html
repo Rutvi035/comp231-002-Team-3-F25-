@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itinerary Builder - Luvo</title>
+
+    <!-- Global Luvo styles -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" th:href="@{/css/itinerary.css}">
+</head>
+<body>
+ 
+<div class="itinerary-hero">
+    <div class="container">
+        <h1 class="itinerary-title">Itinerary Builder</h1>
+    </div>
+</div>
+
+<div class="itinerary-wrapper">
+    <div class="container">
+
+        <!-- Itinerary Details Card -->
+        <section class="itinerary-details-card">
+            <form id="tripDetailsForm" class="itinerary-details-form">
+                <div class="details-field">
+                    <label for="tripName">Trip Name</label>
+                    <input type="text" id="tripName" name="tripName" placeholder="Enter trip name">
+                </div>
+                <div class="details-field">
+                    <label for="tripDate">Date</label>
+                    <input type="date" id="tripDate" name="tripDate">
+                </div>
+               
+            </form>
+            <p class="details-saved-text" id="detailsSavedText"></p>
+        </section>
+
+        <!-- Layout: Days + Summary -->
+        <section class="itinerary-layout">
+            <div class="days-columns">
+
+                <!-- Day 1 -->
+                <div class="day-column" data-day="1">
+                    <h2 class="day-title">Day 1</h2>
+                    <button class="btn btn-add-activity" data-day="1">+ Add Activity</button>
+
+                    <div class="activity-form hidden" data-day="1">
+                        <div class="form-row">
+                            <input type="time" class="activity-time" placeholder="Time">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" class="activity-title" placeholder="Activity title">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" class="activity-location" placeholder="Location">
+                        </div>
+                        <div class="form-row">
+                            <input type="number" min="0" step="0.01"
+                                   class="activity-cost" placeholder="Cost">
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-small btn-primary save-activity-btn">Save</button>
+                            <button type="button" class="btn btn-small btn-secondary cancel-activity-btn">Cancel</button>
+                        </div>
+                    </div>
+
+                    <div class="activities-list" id="day-1-list"></div>
+                </div>
+
+                <!-- Day 2 -->
+                <div class="day-column" data-day="2">
+                    <h2 class="day-title">Day 2</h2>
+                    <button class="btn btn-add-activity" data-day="2">+ Add Activity</button>
+
+                    <div class="activity-form hidden" data-day="2">
+                        <div class="form-row">
+                            <input type="time" class="activity-time" placeholder="Time">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" class="activity-title" placeholder="Activity title">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" class="activity-location" placeholder="Location">
+                        </div>
+                        <div class="form-row">
+                            <input type="number" min="0" step="0.01"
+                                   class="activity-cost" placeholder="Cost">
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-small btn-primary save-activity-btn">Save</button>
+                            <button type="button" class="btn btn-small btn-secondary cancel-activity-btn">Cancel</button>
+                        </div>
+                    </div>
+
+                    <div class="activities-list" id="day-2-list"></div>
+                </div>
+
+                <!-- Day 3 -->
+                <div class="day-column" data-day="3">
+                    <h2 class="day-title">Day 3</h2>
+                    <button class="btn btn-add-activity" data-day="3">+ Add Activity</button>
+
+                    <div class="activity-form hidden" data-day="3">
+                        <div class="form-row">
+                            <input type="time" class="activity-time" placeholder="Time">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" class="activity-title" placeholder="Activity title">
+                        </div>
+                        <div class="form-row">
+                            <input type="text" class="activity-location" placeholder="Location">
+                        </div>
+                        <div class="form-row">
+                            <input type="number" min="0" step="0.01"
+                                   class="activity-cost" placeholder="Cost">
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-small btn-primary save-activity-btn">Save</button>
+                            <button type="button" class="btn btn-small btn-secondary cancel-activity-btn">Cancel</button>
+                        </div>
+                    </div>
+
+                    <div class="activities-list" id="day-3-list"></div>
+                </div>
+
+            </div>
+
+            <!-- Summary Card -->
+            <div class="summary-card">
+			  <h2>Summary</h2>
+			
+			  <div class="summary-row">
+			    <span>Total Cost</span>
+			    <span id="totalCost">$0</span>
+			  </div>
+			
+			  <!-- NEW single Save button -->
+			  <button id="saveItineraryBtn" class="summary-primary-btn">
+			    Save
+			  </button>
+			</div>
+			<!-- Saved summary box (initially hidden) -->
+		<div id="savedSummaryBox" class="saved-summary" style="display:none;">
+		  <h3>Saved Itinerary</h3>
+		  <p id="savedSummaryText"></p>
+		</div>
+					
+            
+        </section>
+    </div>
+</div>
+
+<script>
+/* -------------------------------------------------------
+   TRIP DETAILS (no save button beside date anymore)
+------------------------------------------------------- */
+const tripNameInput = document.getElementById('tripName');
+const tripDateInput = document.getElementById('tripDate');
+
+/* -------------------------------------------------------
+   SUMMARY BOX (appears after clicking "Save")
+------------------------------------------------------- */
+const saveBtn = document.getElementById('saveItineraryBtn');
+const savedSummaryBox = document.getElementById('savedSummaryBox');
+const savedSummaryText = document.getElementById('savedSummaryText');
+const totalCostLabel = document.getElementById('totalCost');
+
+/* -------------------------------------------------------
+   ACTIVITY MANAGEMENT
+------------------------------------------------------- */
+
+let totalCost = 0;
+
+// Update cost display
+function refreshTotalCost() {
+    totalCostLabel.textContent = `$${totalCost.toFixed(2)}`;
+}
+
+// Create activity card in UI
+function createActivityCard(day, data) {
+    const list = document.getElementById(`day-${day}-list`);
+    const card = document.createElement('div');
+    card.className = 'activity-card';
+
+    card.innerHTML = `
+        <div class="activity-main">
+            <div class="activity-time-title">
+                <div class="activity-time-text">${data.time || ''}</div>
+                <div class="activity-title-text">${data.title || ''}</div>
+            </div>
+            <div class="activity-location-text">${data.location || ''}</div>
+        </div>
+        <div class="activity-meta">
+            <span class="activity-cost-text">$${Number(data.cost || 0).toFixed(2)}</span>
+            <div class="activity-actions">
+                <button type="button" class="icon-btn edit-btn">✏️</button>
+                <button type="button" class="icon-btn delete-btn">🗑</button>
+            </div>
+        </div>
+    `;
+
+    const costValue = Number(data.cost || 0);
+    totalCost += costValue;
+    refreshTotalCost();
+
+    // Delete activity
+    card.querySelector('.delete-btn').addEventListener('click', () => {
+        totalCost -= costValue;
+        refreshTotalCost();
+        card.remove();
+    });
+
+    // Edit activity
+    card.querySelector('.edit-btn').addEventListener('click', () => {
+        const column = card.closest('.day-column');
+        const form = column.querySelector('.activity-form');
+
+        form.classList.remove('hidden');
+        form.querySelector('.activity-time').value = data.time || '';
+        form.querySelector('.activity-title').value = data.title || '';
+        form.querySelector('.activity-location').value = data.location || '';
+        form.querySelector('.activity-cost').value = data.cost || '';
+
+        totalCost -= costValue;
+        refreshTotalCost();
+        card.remove();
+    });
+
+    list.appendChild(card);
+}
+
+/* -------------------------------------------------------
+   ADD / EDIT / CANCEL ACTIVITY
+------------------------------------------------------- */
+
+const dayColumns = document.querySelectorAll('.day-column');
+
+dayColumns.forEach(column => {
+    const day = column.dataset.day;
+    const addBtn = column.querySelector('.btn-add-activity');
+    const form = column.querySelector('.activity-form');
+    const saveBtn = form.querySelector('.save-activity-btn');
+    const cancelBtn = form.querySelector('.cancel-activity-btn');
+
+    addBtn.addEventListener('click', () => {
+        form.classList.remove('hidden');
+        form.querySelector('.activity-time').focus();
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        form.classList.add('hidden');
+        form.querySelectorAll('input').forEach(i => i.value = '');
+    });
+
+    saveBtn.addEventListener('click', () => {
+        const time = form.querySelector('.activity-time').value;
+        const title = form.querySelector('.activity-title').value.trim();
+        const location = form.querySelector('.activity-location').value.trim();
+        const cost = form.querySelector('.activity-cost').value;
+
+        if (!title) {
+            alert('Please enter an activity title.');
+            return;
+        }
+
+        createActivityCard(day, { time, title, location, cost });
+
+        form.classList.add('hidden');
+        form.querySelectorAll('input').forEach(i => i.value = '');
+    });
+});
+
+//SAVE ITINERARY → collect per-day data + show summary + (optional) send to backend
+document.getElementById('saveItineraryBtn').addEventListener('click', async () => {
+    const tripName = tripNameInput.value.trim();
+    const dateRaw = tripDateInput.value; // yyyy-mm-dd
+
+    if (!tripName || !dateRaw) {
+        alert('Please enter trip name and date before saving.');
+        return;
+    }
+
+    // ---------------------------------------------------
+    // 1) COLLECT ACTIVITIES PER DAY
+    // ---------------------------------------------------
+    const days = [];
+
+    dayColumns.forEach(column => {
+        const dayNumber = Number(column.dataset.day); // 1, 2, 3
+        const cards = column.querySelectorAll('.activity-card');
+
+        if (cards.length === 0) return; // skip empty day
+
+        const activities = [];
+        let dayTotal = 0;
+
+        cards.forEach(card => {
+            const time = card.querySelector('.activity-time-text')?.textContent.trim() || "";
+            const title = card.querySelector('.activity-title-text')?.textContent.trim() || "";
+            const location = card.querySelector('.activity-location-text')?.textContent.trim() || "";
+            const costText = card.querySelector('.activity-cost-text')?.textContent.replace('$', '').trim() || "0";
+            const cost = parseFloat(costText) || 0;
+
+            dayTotal += cost;
+
+            activities.push({ time, title, location, cost });
+        });
+
+        days.push({ dayNumber, dayTotal, activities });
+    });
+
+    // ---------------------------------------------------
+    // 2) BUILD FINAL ITINERARY OBJECT
+    // ---------------------------------------------------
+    const itineraryPayload = {
+        tripName,
+        date: dateRaw,           // keep raw for backend (yyyy-mm-dd)
+        totalCost: totalCost,    // using your global totalCost
+        days                     // array built above
+    };
+
+    console.log('Itinerary to save:', itineraryPayload);
+
+    // ---------------------------------------------------
+    // 3) SHOW NICE SUMMARY BOX AT THE BOTTOM
+    // ---------------------------------------------------
+    const parts = dateRaw.split("-");
+    const formattedDate = `${parts[1]}/${parts[2]}/${parts[0]}`;
+
+    savedSummaryText.textContent =
+        `${tripName} • ${formattedDate} • Total $${totalCost.toFixed(2)}`;
+
+    savedSummaryBox.style.display = 'block';
+
+    // ---------------------------------------------------
+    // 4) OPTIONAL: SEND TO BACKEND (uncomment to use)
+    // ---------------------------------------------------
+    /*
+    try {
+        const response = await fetch('/api/itineraries', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(itineraryPayload)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to save itinerary');
+        }
+
+        const saved = await response.json();
+        console.log('Saved itinerary from backend:', saved);
+        alert('Itinerary saved successfully!');
+    } catch (err) {
+        console.error(err);
+        alert('Error saving itinerary. Please try again.');
+    } 
+    */
+});
+ 
+</script>
+
+
+</body>
+</html>
