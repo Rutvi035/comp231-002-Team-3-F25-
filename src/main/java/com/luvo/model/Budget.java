@@ -14,7 +14,9 @@ public class Budget {
     private double food = 0;
     private double activities = 0;
 
-    public Budget() {}
+    public Budget() {
+    }
+
     public Budget(double flights, double lodging, double food, double activities) {
         this.flights = flights;
         this.lodging = lodging;
@@ -22,15 +24,37 @@ public class Budget {
         this.activities = activities;
     }
 
-    public double getFlights() { return flights; }
-    public double getLodging() { return lodging; }
-    public double getFood() { return food; }
-    public double getActivities() { return activities; }
+    public double getFlights() {
+        return flights;
+    }
 
-    public void setFlights(double flights) { this.flights = flights; }
-    public void setLodging(double lodging) { this.lodging = lodging; }
-    public void setFood(double food) { this.food = food; }
-    public void setActivities(double activities) { this.activities = activities; }
+    public double getLodging() {
+        return lodging;
+    }
+
+    public double getFood() {
+        return food;
+    }
+
+    public double getActivities() {
+        return activities;
+    }
+
+    public void setFlights(double flights) {
+        this.flights = flights;
+    }
+
+    public void setLodging(double lodging) {
+        this.lodging = lodging;
+    }
+
+    public void setFood(double food) {
+        this.food = food;
+    }
+
+    public void setActivities(double activities) {
+        this.activities = activities;
+    }
 
     public double getTotal() {
         return flights + lodging + food + activities;

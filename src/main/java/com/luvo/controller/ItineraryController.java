@@ -25,9 +25,8 @@ public class ItineraryController {
         this.itineraryService = itineraryService;
     }
 
-    // --------------------------------------
-    // 🔹 1. THYMELEAF PAGE ROUTE (FRONTEND)
-    // --------------------------------------
+    // forntned - thymeleaf
+   
 
     @GetMapping
     public String showItineraryPage(Model model) {
@@ -36,9 +35,7 @@ public class ItineraryController {
     }
 
 
-    // -------------------------------------------------------
-    // 🔹 2. REST API ENDPOINTS (BACKEND CRUD FOR ITINERARIES)
-    // -------------------------------------------------------
+    // rest api endpoints
 
     @ResponseBody
     @GetMapping("/allItinineraries")

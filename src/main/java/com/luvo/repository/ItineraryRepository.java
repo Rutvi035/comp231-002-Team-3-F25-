@@ -6,7 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ItineraryRepository extends MongoRepository<Itinerary, String> {
-    // default CRUD methods are enough
-}
 
- 
+}

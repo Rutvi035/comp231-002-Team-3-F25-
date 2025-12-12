@@ -19,12 +19,12 @@ public class FamilyPlan {
     private String id;
 
     private String tripName;
-    private String status; // e.g. Planned, Booked, Completed
+    private String status; // Planned, Booked, Completed
 
-    // Total budget for the trip
+   
     private double totalBudget;
 
-    // Detailed expenses
+    
     private double flights;
     private double lodging;
     private double food;
@@ -39,7 +39,7 @@ public class FamilyPlan {
         this.totalBudget = totalBudget;
     }
 
-    // --------- Basic getters / setters ---------
+    // getters / setters 
     public String getId() {
         return id;
     }
@@ -104,25 +104,21 @@ public class FamilyPlan {
         this.activities = normalize(activities);
     }
 
-    // --------- Convenience helpers ---------
+  
 
-    /**
-     * Returns total spent across all expense categories.
-     */
-    public double getTotalSpent() {
+    //Returns total spent across all expense categories.
+        public double getTotalSpent() {
         return flights + lodging + food + activities;
     }
 
-    /**
-     * Returns remaining budget (totalBudget - totalSpent).
-     */
+    //    Returns remaining budget (totalBudget - totalSpent).
+     
     public double getRemaining() {
         return totalBudget - getTotalSpent();
     }
 
-    /**
-     * Returns true when expenses exceed the allocated total budget.
-     */
+    //Returns true when expenses exceed the allocated total budget.
+    
     public boolean isOverBudget() {
         return getTotalSpent() > totalBudget;
     }
@@ -144,9 +140,9 @@ public class FamilyPlan {
         }
     }
 
-    /**
-     * Replace the expense value for a named category.
-     */
+    
+      //Replace the expense value for a named category.
+     
     public void setExpense(String category, double amount) {
         double a = normalize(amount);
         switch (category == null ? "" : category.trim().toLowerCase()) {

@@ -29,10 +29,15 @@ public class TourService {
         repo.deleteById(id);
     }
 
-    // Book one seat on a tour; returns true if booked, false if full or not found
+    /**
+     * Book one seat on a tour;
+     * returns true if booked, false if full or not found
+     */
+
     public boolean bookTour(String id) {
         return repo.findById(id).map(t -> {
-            if (t.getCapacity() <= 0) return false;
+            if (t.getCapacity() <= 0)
+                return false;
             t.setCapacity(t.getCapacity() - 1);
             repo.save(t);
             return true;
@@ -55,7 +60,7 @@ public class TourService {
                 }
             });
         } catch (DateTimeParseException e) {
-            return true; // invalid date -> treat as conflict to be safe
+            return true; // invalid date
         }
     }
 }

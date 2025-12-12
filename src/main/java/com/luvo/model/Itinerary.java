@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID; 
+import java.util.UUID;
 
 @Document(collection = "itineraries")
 public class Itinerary {
@@ -13,8 +13,8 @@ public class Itinerary {
     @Id
     private String id;
 
-    private String tripName;     // e.g. "Toronto Weekend"
-    private String date;         // store as "yyyy-MM-dd" from the date input
+    private String tripName;
+    private String date; // store as "yyyy-MM-dd" from the date input
     private List<ItineraryDay> days = new ArrayList<>();
     private double totalCost;
 
@@ -22,7 +22,7 @@ public class Itinerary {
         this.id = UUID.randomUUID().toString();
     }
 
-    // --- getters & setters ---
+    // getters & setters
 
     public String getId() {
         return id;
@@ -72,10 +72,8 @@ public class Itinerary {
                 .sum();
     }
 
-    // --------- inner classes for Day + Activity ----------
-
     public static class ItineraryDay {
-        private int dayNumber; // 1, 2, 3...
+        private int dayNumber;
         private List<ItineraryActivity> activities = new ArrayList<>();
 
         public int getDayNumber() {
@@ -97,9 +95,9 @@ public class Itinerary {
 
     public static class ItineraryActivity {
         private String id;
-        private String time;      // "09:00"
-        private String title;     // "Cafe Breakfast"
-        private String location;  // "123 Main St"
+        private String time;
+        private String title;
+        private String location;
         private double cost;
 
         public ItineraryActivity() {
@@ -149,6 +147,3 @@ public class Itinerary {
         }
     }
 }
-
-
-

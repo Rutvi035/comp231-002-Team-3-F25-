@@ -18,7 +18,7 @@ public class FamilyPlannerController {
         this.plannerService = plannerService;
     }
 
-    // --- 1. Thymeleaf page ---
+    // Thymeleaf page
     @GetMapping
     public String viewPage(Model model) {
         List<FamilyPlan> plans = plannerService.getPlans();
@@ -28,7 +28,7 @@ public class FamilyPlannerController {
         return "family-planner";
     }
 
-    // --- 2. REST endpoints ---
+    // REST endpoints
     @RestController
     @RequestMapping("/family-planner/api")
     public class FamilyPlannerRest {
@@ -50,12 +50,17 @@ public class FamilyPlannerController {
             plan.setLodging(budgetData.getLodging());
             plan.setFood(budgetData.getFood());
             plan.setActivities(budgetData.getActivities());
+
+            return plannerService.updatePlan(plan);
+        }
+
+        // DELETE endpoint by id
             // Recalculate total spent into the stored totalBudget if desired, or keep totalBudget as allocation.
             // Here we keep totalBudget as the allocation; caller may update allocation separately.
             return plannerService.updatePlan(plan);
         }
 
-        // ✅ DELETE endpoint by id
+        //  DELETE endpoint by id
         @DeleteMapping("/{id}")
         public void deletePlan(@PathVariable String id) {
             plannerService.deletePlan(id);
