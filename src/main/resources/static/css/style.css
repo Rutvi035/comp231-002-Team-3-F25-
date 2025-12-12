@@ -16,7 +16,7 @@ body {
     padding: 0 20px;
 }
 
-/* Navigation */
+
 .navbar {
     background-color: #5B9FBD;
     padding: 1rem 0;
@@ -84,7 +84,7 @@ body {
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-/* Hero Section */
+
 .hero {
     background: linear-gradient(135deg, #A4C8DB 0%, #7BADC9 100%);
     padding: 5rem 0;
@@ -105,7 +105,7 @@ body {
     line-height: 1.8;
 }
 
-/* Search Bar */
+
 .search-bar {
     display: flex;
     max-width: 800px;
@@ -141,7 +141,7 @@ body {
     font-weight: 600;
 }
 
-/* Roles Section */
+
 .roles {
     padding: 5rem 0;
     background-color: #F5F5F5;
@@ -206,7 +206,7 @@ body {
     background-color: #3D5A80;
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
     .nav-menu {
         display: none;
