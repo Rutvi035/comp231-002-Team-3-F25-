@@ -11,7 +11,7 @@ body {
     background:#c9f0e8;
 }
 
-/* --- New Header Styling --- */
+
 .app-header {
     background: #c9f0e8; 
     padding: 40px 20px 0 20px;
@@ -29,7 +29,7 @@ body {
     margin: 0;
     padding-bottom: 30px;
 }
-/* ------------------------- */
+
 
 .main {
     display: flex;
@@ -201,7 +201,7 @@ label {
 <script>
 const apiBase = 'http://localhost:8080/family-planner/api';
 
-// Load all trips
+
 async function loadTrips() {
     try {
         const res = await fetch(apiBase);
@@ -212,7 +212,7 @@ async function loadTrips() {
     }
 }
 
-// Render trips on screen
+
 function renderTrips(trips) {
     const tripList = document.getElementById('tripList');
     tripList.innerHTML = '';
@@ -238,7 +238,7 @@ function renderTrips(trips) {
 
         tripList.appendChild(card);
 
-        // VIEW button
+        
         card.querySelector('.view-btn').addEventListener('click', () => {
             document.querySelector('#budgetForm input[name="index"]').value = index;
             document.querySelector('#budgetForm input[name="flights"]').value = trip.flights;
@@ -247,7 +247,7 @@ function renderTrips(trips) {
             document.querySelector('#budgetForm input[name="activities"]').value = trip.activities;
         });
 
-        // DELETE button
+        
         card.querySelector('.delete-btn').addEventListener('click', async () => {
             try {
                 await fetch(`${apiBase}/${index}`, { method: 'DELETE' });
@@ -259,13 +259,13 @@ function renderTrips(trips) {
         });
     });
 
-    // Update total budget circle
+   
     const total = trips.reduce((sum, t) => sum + (t.budget || 0), 0);
     document.getElementById('totalBudget').innerHTML =
         `Total<br>$${total.toFixed(2)}`;
 }
 
-// Add new trip
+
 document.querySelector('#addTripForm').addEventListener('submit', async e => {
     e.preventDefault();
     const form = e.target;
@@ -296,7 +296,7 @@ document.querySelector('#addTripForm').addEventListener('submit', async e => {
     }
 });
 
-// Update budget + alerts + status change
+
 document.querySelector('#budgetForm').addEventListener('submit', async e => {
     e.preventDefault();
     const form = e.target;
@@ -340,7 +340,7 @@ document.querySelector('#budgetForm').addEventListener('submit', async e => {
     }
 });
 
-// Initial load
+
 loadTrips();
 </script>
 
