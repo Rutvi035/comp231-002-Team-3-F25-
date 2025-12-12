@@ -1,0 +1,133 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f7f9fb;
+  color: #1a1a1a;
+}
+
+/* Navbar */
+.temp-navbar {
+  height: 56px;
+  background: #377fb6;
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  color: #f4f9ff;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.nav-links a {
+  color: #e7f4f9;
+  margin: 0 15px;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.auth-buttons button {
+  margin-left: 10px;
+  padding: 7px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login {
+  background: #0a415b;
+  color: white;
+}
+
+.signup {
+  background: #ffffff;
+  color: #0a415b;
+}
+
+/* Hero Header */
+.hero {
+  background: linear-gradient(to bottom, #b9dff1, #d2ecf7);
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.hero h1 {
+  margin-bottom: 25px;
+  font-size: 36px;
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.filters input,
+.filters select {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 180px;
+}
+
+.apply-btn {
+  background: #136487;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Cards */
+.cards-section {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  padding: 40px 20px;
+}
+
+.card {
+  background: white;
+  width: 260px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  border: 1px solid #e3e6ea;
+}
+
+.card h3 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+.price {
+  font-weight: bold;
+  font-size: 22px;
+}
+
+.details {
+  color: #5a5a5a;
+  margin: 5px 0 15px;
+}
+
+.view-link {
+  font-size: 14px;
+  color: #03628e;
+  text-decoration: none;
+}
+
+.cta-btn {
+  width: 100%;
+  margin-top: 15px;
+  padding: 10px;
+  background: #136487;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}

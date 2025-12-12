@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Luvo - Tour Guide</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<!-- Navigation (same as your home page) -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-wrapper">
+            <a th:href="@{/}" class="logo">Luvo</a>
+            <ul class="nav-menu">
+                <li><a th:href="@{/explore}">Explore</a></li>
+                <li><a th:href="@{/family-planner}">Family Planner</a></li>
+                <li><a th:href="@{/itinerary}">Itinerary</a></li>
+                <li><a th:href="@{/business}">Business</a></li>
+                <li><a th:href="@{/guide}">Guide</a></li>
+                <li><a th:href="@{/admin}">Admin</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a th:href="@{/login}" class="btn btn-login">Login</a>
+                <a th:href="@{/signup}" class="btn btn-signup">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Tour Guide Content -->
+<section class="roles">
+    <div class="container">
+        <h2 class="section-title">Tour Guide – Manage Your Schedule</h2>
+
+        <!-- Add Tour Form -->
+        <div class="role-card card-blue" style="margin-bottom: 2rem;">
+            <h3 class="role-title">Add New Tour</h3>
+            <p class="role-description">Create a tour and set capacity. Overlapping date/time is not allowed.</p>
+
+            <form id="tourForm">
+                <div style="margin-bottom: 1rem;">
+                    <label>Title</label><br>
+                    <input type="text" id="title" style="width: 100%; padding: 0.5rem;">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label>Location</label><br>
+                    <input type="text" id="location" style="width: 100%; padding: 0.5rem;">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label>Start time</label><br>
+                    <input type="datetime-local" id="startTime" style="width: 100%; padding: 0.5rem;">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label>End time</label><br>
+                    <input type="datetime-local" id="endTime" style="width: 100%; padding: 0.5rem;">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label>Capacity</label><br>
+                    <input type="number" id="capacity" min="1" value="10" style="width: 100%; padding: 0.5rem;">
+                </div>
+
+                <button type="button" class="btn btn-role" onclick="addTour()">Save Tour</button>
+                <p id="errorMsg" style="color: darkred; margin-top: 0.75rem;"></p>
+            </form>
+        </div>
+
+        <!-- Existing tours table -->
+        <div class="role-card card-green">
+            <h3 class="role-title">Upcoming Tours</h3>
+            <p class="role-description">View your scheduled tours and remove if needed.</p>
+
+            <table border="1" width="100%" cellspacing="0" cellpadding="8">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Location</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Capacity</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody id="toursTableBody">
+                <tr th:if="${#lists.isEmpty(tours)}">
+                    <td colspan="6" style="text-align: center;">No tours yet. Add your first tour above.</td>
+                </tr>
+                <tr th:each="tour, i : ${tours}">
+                    <td th:text="${tour.title}"></td>
+                    <td th:text="${tour.location}"></td>
+                    <td th:text="${tour.startTime}"></td>
+                    <td th:text="${tour.endTime}"></td>
+                    <td th:text="${tour.capacity}"></td>
+                    <td>
+                        <button class="btn btn-login"
+                                th:onclick="'deleteTour(' + ${i.index} + ')'">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    function addTour() {
+        const errorMsg = document.getElementById("errorMsg");
+        errorMsg.textContent = "";
+
+        const tour = {
+            title: document.getElementById("title").value,
+            location: document.getElementById("l

@@ -1,0 +1,21 @@
+package com.luvo.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.nio.file.Paths;
+
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        
+        String uploadsPath = Paths.get(System.getProperty("user.dir"), "luvo-uploads").toUri().toString();
+        String windowsUploads = Paths.get("C:/luvo-uploads").toUri().toString();
+
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations(uploadsPath, windowsUploads);
+    }
+}

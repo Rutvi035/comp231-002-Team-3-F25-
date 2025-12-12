@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Explorer</title>
+    <!-- Global Luvo styles -->
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <!-- Page-specific styles -->
+    <link rel="stylesheet" th:href="@{/css/explorer.css}" />
+  </head>
+
+  <body>
+    <!-- Temporary Navbar -->
+    <nav class="temp-navbar">
+      <a th:href="@{/}" class="logo">Luvo</a> &nbsp;|&nbsp; Student Explorer
+    </nav>
+
+    <!-- Header -->
+    <header class="hero">
+      <h1>Explore Trips</h1>
+
+      <div class="filters">
+        <input id="destinationInput" type="text" placeholder="Destination" />
+        <input id="dateInput" type="date" />
+          <select id="typeInput">
+          <option value="Any type">Any type</option>
+          <option value="Beach">Beach</option>
+          <option value="Mountains">Mountains</option>
+          <option value="City">City</option>
+          <option value="Hotel">Hotel</option>
+          <option value="Airbnb">Airbnb</option>
+          <option value="Activity">Activity</option>
+        </select>
+        <button class="apply-btn" id="filterBtn">Apply</button>
+      </div>
+    </header>
+
+    <!-- Trip Cards -->
+    <section class="cards-section">
+      <div class="cards-container" id="cardsContainer">
+        <!-- Trip cards will be dynamically inserted here -->
+      </div>
+    </section>
+
+    <script>
+      const API_URL = "/explore/api";
+
+      // Load all trips when the page starts
+      document.addEventListener("DOMContentLoaded", loadTrips);
+      document
+        .getElementById("filterBtn")
+        .addEventListener("click", applyFilters);
+
+      async function loadTrips() {
+        try {
+          const res = await fetch(API_URL);
+          const trips = await res.json();
+          renderTrips(trips);
+        } catch (err) {
+          console.error("Error loading trips:", err);
+        }
+      }
+
+      async function bookActivity(tourId, btn) {
+        try {
+          btn.disabled = true;
+          const res = await fetch(`/guide/api/${tourId}/book`, { method: 'POST' });
+          const text = await res.text();
+          if (text === 'BOOKED') {
+            btn.textContent = 'Booked';
+            btn.disabled = true;
+          } else if (text === 'NO_SEATS') {
+            btn.textContent = 'Full';
+            btn.disabled = true;
+          } else {
+            btn.textContent = 'Error';
+            btn.disabled = false;
+          }
+        } catch (e) {
+          console.error(e);
+          btn.textContent = 'Error';
+          btn.disabled = false;
+        }
+      }
+
+      async function applyFilters() {
+        const destination = document.getElementById("destinationInput").value;
+        const type = document.getElementById("typeInput").value;
+
+        let url = `${API_URL}?`;
+
+        if (destination) url += `destination=${destination}&`;
+        if (type !== "Any type") url += `type=${type}`;
+
+        try {
+          const res = await fetch(url);
+          const trips = await res.json();
+          renderTrips(trips);
+        } catch (err) {
+          console.error("Error applying filters:", err);
+        }
+      }
+
+      function renderTrips(trips) {
+        const container = document.getElementById("cardsContainer");
+        container.innerHTML = "";
+
+        if (trips.length === 0) {
+          container.innerHTML = "<p>No trips found. Try other filters.</p>";
+          return;
+        }
+
+        trips.forEach((t) => {
+          const priceRange = t.priceRange ? `<p class="price-range" style="margin:4px 0;color:#444">${t.priceRange}</p>` : '';
+          const price = (t.price && t.price > 0) ? `<p class="price">$${t.price}</p>` : '';
+          const bookBtn = (t.type && t.type.toLowerCase()==='activity' && t.metaId)
+            ? `<button class="cta-btn" onclick="bookActivity('${t.metaId}', this)">Book</button>`
+            : `<button class="cta-btn">View Details</button>`;
+          container.innerHTML += `
+            <div class="card">
+              <img src="${t.imageUrl}" alt="${t.title}" class="card-img"/>
+              <h3 style="margin:8px 0">${t.title}</h3>
+              ${priceRange}
+              ${price}
+              <p class="details">${t.details}</p>
+              ${bookBtn}
+            </div>
+          `;
+        });
+      }
+    </script>
+  </body>
+</html>

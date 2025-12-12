@@ -1,121 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Luvo – Local Business</title>
 
-    <!-- Bootstrap CSS -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- TEMPORARY page-specific styles -->
     <style>
         body {
             background: linear-gradient(180deg, #4caad8 0%, #71c7b8 100%);
             min-height: 100vh;
         }
-        /* SIMPLE placeholder top bar - will be replaced later */
         .temp-navbar {
             height: 56px;
             background: #377fb6;
             display: flex;
             align-items: center;
             padding: 0 1.5rem;
-            color: #f4f9ff;
+            color: white;
             font-weight: 600;
             font-size: 1.1rem;
         }
-        .page-title {
-            margin-top: 60px;
-            font-weight: 700;
-            color: #073b4c;
-        }
-        .add-card {
-            background: #fdfefe;
-            border-radius: 18px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            padding: 24px;
-            max-width: 720px;
-            margin: 24px auto 40px;
-        }
-        .my-listings-title {
-            font-weight: 600;
-            color: #073b4c;
-        }
         .listing-card {
-            border-radius: 16px;
-            border: none;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-        }
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #22c55e;
-            display: inline-block;
-            margin-right: 6px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
     </style>
 </head>
+
 <body>
 
-<!-- TEMP navbar – NO Admin link, will be replaced later -->
 <div class="temp-navbar">
-    Luvo &nbsp;|&nbsp; Local Business
+    Luvo | Local Business
 </div>
 
-<div class="container text-center">
-    <h1 class="page-title">Local Business</h1>
+<div class="container mt-4">
 
-    <!-- Add Listing form -->
-    <div class="add-card text-start">
-        <h4 class="mb-3">Add Listing</h4>
+    <h2 class="text-center">Local Business</h2>
 
-        <!-- Only frontend layout for now (no backend connected yet) -->
-        <form>
-            <div class="row g-3 mb-3">
+    <div th:if="${successMessage}" class="alert alert-success text-center" th:text="${successMessage}"></div>
+
+    <!-- FORM -->
+    <div class="card p-4 mt-4">
+        <h4 th:text="${editing} ? 'Edit Listing' : 'Add Listing'"></h4>
+
+        <form th:action="@{/business}" th:object="${localBusiness}" method="post" enctype="multipart/form-data">
+
+            <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="*{imagePath}">
+
+            <div class="row mb-3">
                 <div class="col-md-6">
-                    <label class="form-label small">Name</label>
-                    <input type="text" class="form-control" placeholder="Seaside Hotel">
+                    <label>Name</label>
+                    <input class="form-control" th:field="*{name}">
+                    <div class="text-danger" th:errors="*{name}"></div>
                 </div>
+
                 <div class="col-md-6">
-                    <label class="form-label small">Category</label>
-                    <input type="text" class="form-control" placeholder="Hotel, Tour, Lodging">
+                    <label>Category</label>
+                    <input class="form-control" th:field="*{category}">
+                    <div class="text-danger" th:errors="*{category}"></div>
                 </div>
             </div>
 
-            <div class="row g-3 align-items-end">
-                <div class="col-md-8">
-                    <label class="form-label small">Description</label>
-                    <input type="text" class="form-control" placeholder="Describe your place or service">
+            <div class="mb-3">
+                <label>Description</label>
+                <input class="form-control" th:field="*{description}">
+                <div class="text-danger" th:errors="*{description}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label>Image</label>
+                <input type="file" name="imageFile" class="form-control" th:attr="required=${!editing}">
+                <div class="text-danger" th:errors="*{imagePath}"></div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label>Phone</label>
+                    <input class="form-control" th:field="*{phone}">
+                    <div class="text-danger" th:errors="*{phone}"></div>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label small">Price</label>
-                    <div class="input-group">
-                        <span class="input-group-text">CAD</span>
-                        <input type="number" class="form-control" placeholder="150">
-                    </div>
+
+                <div class="col-md-4">
+                    <label>Email</label>
+                    <input class="form-control" th:field="*{email}">
+                    <div class="text-danger" th:errors="*{email}"></div>
                 </div>
-                <div class="col-md-1 d-grid">
-                    <button type="button" class="btn btn-danger mt-2">Add</button>
+
+                <div class="col-md-4">
+                    <label>Price Range</label>
+                    <input class="form-control" th:field="*{priceRange}" placeholder="$ - $$">
+                    <div class="text-danger" th:errors="*{priceRange}"></div>
                 </div>
             </div>
+
+            <button type="submit" class="btn btn-danger w-100"
+                    th:text="${editing} ? 'Update' : 'Add'"></button>
         </form>
     </div>
 
-    <!-- My Listings (empty until backend is added) -->
-    <div class="text-start mt-4">
-        <h4 class="my-listings-title mb-3">My Listings</h4>
+    <!-- LISTINGS -->
+    <h3 class="mt-5">My Listings</h3>
 
-        <div class="row g-3">
-            <!-- No listings yet — backend will fill this -->
+    <div class="row mt-3">
+        <div class="col-md-4 mb-4" th:each="b : ${businesses}">
+            <div class="card listing-card p-3">
+                <div th:if="${b.imagePath}">
+                    <img th:src="${b.imagePath}" class="img-fluid mb-3" style="height:150px;object-fit:cover;">
+                </div>
+
+                <h5 th:text="${b.name}"></h5>
+                <p class="text-muted" th:text="${b.category}"></p>
+                <p th:text="${b.description}"></p>
+                <p class="fw-bold" th:text="${b.priceRange}"></p>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <a th:href="@{'/business/edit/' + ${b.id}}" class="btn btn-sm btn-primary">Edit</a>
+                    <a th:href="@{'/business/delete/' + ${b.id}}" class="btn btn-sm btn-danger">Delete</a>
+                </div>
+            </div>
         </div>
     </div>
 
 </div>
 
-<!-- Bootstrap JS bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

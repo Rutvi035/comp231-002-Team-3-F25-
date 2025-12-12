@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">FAQ - Luvo</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/faq.css}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a th:href="@{/}" class="logo">Luvo</a>
+                <ul class="nav-menu">
+                    <li><a th:href="@{/explore}">Explore</a></li>
+                    <li><a th:href="@{/family-planner}">Family Planner</a></li>
+                    <li><a th:href="@{/itinerary}">Itinerary</a></li>
+                    <li><a th:href="@{/business}">Business</a></li>
+                    <li><a th:href="@{/guide}">Guide</a></li>
+                    <li><a th:href="@{/admin}">Admin</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a th:href="@{/login}" class="btn btn-login">Login</a>
+                    <a th:href="@{/signup}" class="btn btn-signup">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="faq-hero">
+        <div class="container">
+            <h1 class="page-title">Frequently Asked Questions</h1>
+            <p class="page-subtitle">Find answers to common questions about Luvo and our travel services</p>
+            
+            <!-- Search Box -->
+            <div class="faq-search">
+                <input type="text" id="faqSearch" placeholder="Search for answers..." class="search-input">
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Categories -->
+    <section class="faq-categories">
+        <div class="container">
+            <div class="category-pills">
+                <button class="category-pill active" data-category="all">All Questions</button>
+                <button class="category-pill" data-category="general">General</button>
+                <button class="category-pill" data-category="booking">Booking & Payment</button>
+                <button class="category-pill" data-category="account">Account</button>
+                <button class="category-pill" data-category="business">For Businesses</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Content -->
+    <section class="faq-content">
+        <div class="container">
+            <!-- General Questions -->
+            <div class="faq-category-section" data-category="general">
+                <h2 class="category-title">General Questions</h2>
+                
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What is Luvo?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Luvo is a comprehensive travel planning platform that helps you explore destinations, compare travel options, and plan itineraries all in one place. Whether you're a student looking for affordable trips, a family planning a vacation, or a local business wanting to connect with travelers, Luvo provides the tools you need.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Is Luvo free to use?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! Luvo is free for travelers to search, explore, and plan trips. We offer premium features for enhanced planning capabilities, and businesses pay a small commission on bookings made through our platform.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How does Luvo work?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Simply create an account, search for your desired destination, and browse through accommodations, activities, and local experiences. You can compare prices, read reviews, and book everything directly through Luvo. Our Family Planner tool also helps you collaborate with travel companions and manage budgets together.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What destinations does Luvo cover?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Luvo covers destinations worldwide, from major cities to hidden gems. We're constantly adding new locations and local businesses to our platform. If you don't find a specific destination, you can request it, and we'll work on adding it.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking & Payment -->
+            <div class="faq-category-section" data-category="booking">
+                <h2 class="category-title">Booking & Payment</h2>
+                
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How do I make a booking?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>To make a booking, search for your destination, select the service you want (accommodation, activity, etc.), choose your dates, and click "Book Now." You'll be guided through a secure checkout process where you can review your booking and make payment.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What payment methods do you accept?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We accept all major credit cards (Visa, MasterCard, American Express), debit cards, PayPal, and various digital payment methods depending on your region. All transactions are encrypted and secure.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Can I cancel or modify my booking?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Cancellation and modification policies vary by provider. Most bookings can be cancelled or modified up to 24-48 hours before your scheduled date. You can view specific policies on each listing's page and manage your bookings from your account dashboard.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Will I receive a booking confirmation?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! You'll receive an instant email confirmation with all your booking details, including confirmation numbers, addresses, and contact information. You can also access all your bookings anytime from your Luvo account.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Are there any hidden fees?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>No hidden fees! The price you see during checkout is the final price you pay. This includes all applicable taxes and service fees. Some accommodations or activities may have optional add-ons, but these are clearly marked.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Questions -->
+            <div class="faq-category-section" data-category="account">
+                <h2 class="category-title">Account & Profile</h2>
+                
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How do I create an account?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Click the "Sign Up" button in the top right corner, fill in your basic information (name, email, password), and verify your email address. You can also sign up using your Google or Facebook account for faster registration.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>I forgot my password. What should I do?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Click on "Login" and then select "Forgot Password." Enter your email address, and we'll send you a password reset link. Follow the instructions in the email to create a new password.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How do I update my profile information?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Log into your account, click on your profile icon, and select "Account Settings." From there, you can update your personal information, contact details, payment methods, and preferences.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Can I delete my account?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes, you can delete your account anytime from Account Settings. Please note that deleting your account will remove all your saved trips, preferences, and booking history. Active bookings must be cancelled before account deletion.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Questions -->
+            <div class="faq-category-section" data-category="business">
+                <h2 class="category-title">For Businesses</h2>
+                
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How can I list my business on Luvo?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Visit our Business Portal and click "List Your Business." Fill out the registration form with your business details, upload photos, and set your pricing and availability. Our team will review your submission within 2-3 business days.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What are the fees for businesses?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Luvo charges a commission on completed bookings, typically between 10-15% depending on your service type and booking volume. There are no upfront listing fees or monthly subscriptions. You only pay when you receive bookings.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How do I manage my bookings?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Access your Business Dashboard to view all bookings, update availability, manage pricing, and communicate with customers. You'll receive real-time notifications for new bookings and inquiries.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>When do I receive payment for bookings?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Payments are processed and transferred to your account within 24-48 hours after the service is completed. You can track all your earnings and transactions in your Business Dashboard.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Still Have Questions Section -->
+    <section class="contact-cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Still have questions?</h2>
+                <p>Can't find what you're looking for? Our support team is here to help!</p>
+                <a th:href="@{/contact}" class="btn btn-contact">Contact Support</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>About Luvo</h4>
+                    <p>Your ultimate travel companion for exploring destinations and planning unforgettable experiences.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a th:href="@{/explore}">Explore Destinations</a></li>
+                        <li><a th:href="@{/family-planner}">Family Planner</a></li>
+                        <li><a th:href="@{/business}">For Businesses</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a th:href="@{/guide}">Travel Guide</a></li>
+                        <li><a th:href="@{/contact}">Contact Us</a></li>
+                        <li><a th:href="@{/faq}">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Luvo. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script th:src="@{/js/faq.js}"></script>
+</body>
+</html>

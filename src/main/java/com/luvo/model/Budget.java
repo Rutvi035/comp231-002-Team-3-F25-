@@ -1,12 +1,22 @@
 package com.luvo.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "budgets")
 public class Budget {
+
+    @Id
+    private String id;
+
     private double flights = 0;
     private double lodging = 0;
     private double food = 0;
     private double activities = 0;
 
-    public Budget() {}
+    public Budget() {
+    }
+
     public Budget(double flights, double lodging, double food, double activities) {
         this.flights = flights;
         this.lodging = lodging;
@@ -14,15 +24,37 @@ public class Budget {
         this.activities = activities;
     }
 
-    public double getFlights() { return flights; }
-    public double getLodging() { return lodging; }
-    public double getFood() { return food; }
-    public double getActivities() { return activities; }
+    public double getFlights() {
+        return flights;
+    }
 
-    public void setFlights(double flights) { this.flights = flights; }
-    public void setLodging(double lodging) { this.lodging = lodging; }
-    public void setFood(double food) { this.food = food; }
-    public void setActivities(double activities) { this.activities = activities; }
+    public double getLodging() {
+        return lodging;
+    }
+
+    public double getFood() {
+        return food;
+    }
+
+    public double getActivities() {
+        return activities;
+    }
+
+    public void setFlights(double flights) {
+        this.flights = flights;
+    }
+
+    public void setLodging(double lodging) {
+        this.lodging = lodging;
+    }
+
+    public void setFood(double food) {
+        this.food = food;
+    }
+
+    public void setActivities(double activities) {
+        this.activities = activities;
+    }
 
     public double getTotal() {
         return flights + lodging + food + activities;

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Sign Up - Luvo</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a th:href="@{/}" class="logo">Luvo</a>
+                <ul class="nav-menu">
+                    <li><a th:href="@{/explore}">Explore</a></li>
+                    <li><a th:href="@{/family-planner}">Family Planner</a></li>
+                    <li><a th:href="@{/itinerary}">Itinerary</a></li>
+                    <li><a th:href="@{/business}">Business</a></li>
+                    <li><a th:href="@{/guide}">Guide</a></li>
+                    <li><a th:href="@{/admin}">Admin</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a th:href="@{/login}" class="btn btn-login">Login</a>
+                    <a th:href="@{/signup}" class="btn btn-signup active">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sign Up Section -->
+    <section class="auth-section">
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <h1>Create Account</h1>
+                        <p>Join Luvo and start planning your dream trips</p>
+                    </div>
+
+                    <!-- Social Sign Up -->
+                    <div class="social-login">
+                        <button class="social-btn google-btn">
+                            <span class="social-icon">🔵</span>
+                            Sign up with Google
+                        </button>
+                        <button class="social-btn facebook-btn">
+                            <span class="social-icon">📘</span>
+                            Sign up with Facebook
+                        </button>
+                    </div>
+
+                    <div class="divider">
+                        <span>OR</span>
+                    </div>
+
+                    <!-- Sign Up Form -->
+                    <form th:action="@{/signup/process}" method="post" class="auth-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" name="firstName" required 
+                                       placeholder="John">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" required 
+                                       placeholder="Doe">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required 
+                                   placeholder="your.email@example.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" required 
+                                   placeholder="Create a strong password" minlength="8">
+                            <small class="help-text">Must be at least 8 characters</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required 
+                                   placeholder="Re-enter your password">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="accountType">I am a...</label>
+                            <select id="accountType" name="accountType" required>
+                                <option value="">Select account type</option>
+                                <option value="traveler">Traveler</option>
+                                <option value="student">Student Explorer</option>
+                                <option value="family">Family Planner</option>
+                                <option value="business">Local Business</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="terms" required>
+                                <span>I agree to the <a href="#" class="link">Terms of Service</a> and <a href="#" class="link">Privacy Policy</a></span>
+                            </label>
+                        </div>
+
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="newsletter">
+                                <span>Send me travel tips and special offers</span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-submit">Create Account</button>
+                    </form>
+
+                    <div class="auth-footer">
+                        <p>Already have an account? <a th:href="@{/login}">Login</a></p>
+                    </div>
+                </div>
+
+                <!-- Info Side Panel -->
+                <div class="auth-info signup-info">
+                    <div class="info-content">
+                        <h2>Why Join Luvo?</h2>
+                        <div class="info-features">
+                            <div class="info-item">
+                                <span class="info-icon">🌍</span>
+                                <div>
+                                    <h3>Access Worldwide</h3>
+                                    <p>Explore destinations in 150+ countries</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">💳</span>
+                                <div>
+                                    <h3>Best Price Guarantee</h3>
+                                    <p>Compare prices and get the best deals</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">👥</span>
+                                <div>
+                                    <h3>Collaborate</h3>
+                                    <p>Plan trips together with family and friends</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🔒</span>
+                                <div>
+                                    <h3>Secure & Safe</h3>
+                                    <p>Your data is protected with encryption</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stats">
+                            <div class="stat-item">
+                                <h3>10K+</h3>
+                                <p>Active Users</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>500+</h3>
+                                <p>Destinations</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>5000+</h3>
+                                <p>Local Businesses</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Luvo. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Password confirmation validation
+        document.querySelector('.auth-form').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+                document.getElementById('confirmPassword').focus();
+            }
+        });
+    </script>
+</body>
+</html>

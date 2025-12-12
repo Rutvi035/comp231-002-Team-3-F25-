@@ -23,7 +23,7 @@ public class FamilyPlannerController {
     public String viewPage(Model model) {
         List<FamilyPlan> plans = plannerService.getPlans();
         model.addAttribute("plans", plans);
-        double totalBudget = plans.stream().mapToDouble(FamilyPlan::getBudget).sum();
+        double totalBudget = plans.stream().mapToDouble(FamilyPlan::getTotalBudget).sum();
         model.addAttribute("totalBudget", totalBudget);
         return "family-planner";
     }
@@ -40,19 +40,24 @@ public class FamilyPlannerController {
 
         @PostMapping
         public FamilyPlan addPlan(@RequestBody FamilyPlan plan) {
-            plannerService.addPlan(plan);
-            return plan;
+            return plannerService.addPlan(plan);
         }
 
-        @PutMapping("/{index}/budget")
-        public FamilyPlan updateBudget(@PathVariable int index, @RequestBody FamilyPlan budgetData) {
-            FamilyPlan plan = plannerService.getPlans().get(index);
+        @PutMapping("/{id}/budget")
+        public FamilyPlan updateBudget(@PathVariable String id, @RequestBody FamilyPlan budgetData) {
+            FamilyPlan plan = plannerService.getPlan(id);
             plan.setFlights(budgetData.getFlights());
             plan.setLodging(budgetData.getLodging());
             plan.setFood(budgetData.getFood());
             plan.setActivities(budgetData.getActivities());
-            plan.setBudget(plan.getFlights() + plan.getLodging() + plan.getFood() + plan.getActivities());
-            return plan;
+
+            return plannerService.updatePlan(plan);
+        }
+
+        // DELETE endpoint by id
+            // Recalculate total spent into the stored totalBudget if desired, or keep totalBudget as allocation.
+            // Here we keep totalBudget as the allocation; caller may update allocation separately.
+            return plannerService.updatePlan(plan);
         }
 
         

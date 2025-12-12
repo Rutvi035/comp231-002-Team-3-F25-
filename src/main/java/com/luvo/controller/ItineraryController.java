@@ -1,0 +1,83 @@
+package com.luvo.controller;
+
+import com.luvo.model.Itinerary;
+import com.luvo.service.ItineraryService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List; 
+
+/**
+ * Combined Controller:
+ * - Serves the Thymeleaf Itinerary Page
+ * - Provides REST API for CRUD operations
+ */
+@Controller
+@RequestMapping("/itinerary")
+public class ItineraryController {
+
+    private final ItineraryService itineraryService;
+
+    public ItineraryController(ItineraryService itineraryService) {
+        this.itineraryService = itineraryService;
+    }
+
+    // forntned - thymeleaf
+   
+
+    @GetMapping
+    public String showItineraryPage(Model model) {
+        model.addAttribute("pageTitle", "Itinerary Builder - Luvo");
+        return "itinerary";   // loads templates/itinerary.html
+    }
+
+
+    // rest api endpoints
+
+    @ResponseBody
+    @GetMapping("/allItinineraries")
+    public List<Itinerary> getAllItineraries() {
+        return itineraryService.findAll();
+    }
+
+    @ResponseBody
+    @GetMapping("/{id}")
+    public ResponseEntity<Itinerary> getItineraryById(@PathVariable String id) {
+        return itineraryService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @ResponseBody
+    @PostMapping
+    public ResponseEntity<Itinerary> createItinerary(@RequestBody Itinerary itinerary) {
+        Itinerary saved = itineraryService.save(itinerary);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+
+    @ResponseBody
+    @PutMapping("/{id}")
+    public ResponseEntity<Itinerary> updateItinerary(
+            @PathVariable String id,
+            @RequestBody Itinerary request) {
+
+        return itineraryService.findById(id)
+                .map(existing -> {
+                    request.setId(existing.getId());
+                    Itinerary updated = itineraryService.save(request);
+                    return ResponseEntity.ok(updated);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @ResponseBody
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteItinerary(@PathVariable String id) {
+        itineraryService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}
+
