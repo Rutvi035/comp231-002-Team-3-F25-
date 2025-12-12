@@ -55,6 +55,12 @@ public class FamilyPlannerController {
         }
 
         // DELETE endpoint by id
+            // Recalculate total spent into the stored totalBudget if desired, or keep totalBudget as allocation.
+            // Here we keep totalBudget as the allocation; caller may update allocation separately.
+            return plannerService.updatePlan(plan);
+        }
+
+        //  DELETE endpoint by id
         @DeleteMapping("/{id}")
         public void deletePlan(@PathVariable String id) {
             plannerService.deletePlan(id);

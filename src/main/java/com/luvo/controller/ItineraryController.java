@@ -26,6 +26,8 @@ public class ItineraryController {
     }
 
     // forntned - thymeleaf
+   
+
     @GetMapping
     public String showItineraryPage(Model model) {
         model.addAttribute("pageTitle", "Itinerary Builder - Luvo");
