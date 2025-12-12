@@ -1,31 +1,38 @@
 package com.luvo.service;
 
 import com.luvo.model.FamilyPlan;
-import com.luvo.model.Budget;
+import com.luvo.repository.IFamilyPlanRepository;
+
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FamilyPlannerService {
 
-    private final List<FamilyPlan> plans = new ArrayList<>();
-    private Budget budget = new Budget();
+    private final IFamilyPlanRepository familyPlanRepository;
+
+    public FamilyPlannerService(IFamilyPlanRepository familyPlanRepository) {
+        this.familyPlanRepository = familyPlanRepository;
+    }
 
     public List<FamilyPlan> getPlans() {
-        return plans;
+        return familyPlanRepository.findAll();
     }
 
-    public void addPlan(FamilyPlan plan) {
-        plans.add(plan);
+    public FamilyPlan addPlan(FamilyPlan plan) {
+        return familyPlanRepository.save(plan);
     }
 
-    public Budget getBudget() {
-        return budget;
+    public FamilyPlan getPlan(String id) {
+        return familyPlanRepository.findById(id).orElseThrow(() -> new RuntimeException("Plan not found"));
     }
 
-    public void setBudget(Budget budget) {
-        this.budget = budget;
+    public FamilyPlan updatePlan(FamilyPlan plan) {
+        return familyPlanRepository.save(plan);
+    }
+
+    public void deletePlan(String id) {
+         familyPlanRepository.deleteById(id);
     }
 }

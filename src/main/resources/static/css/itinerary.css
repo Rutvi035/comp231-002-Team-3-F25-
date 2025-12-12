@@ -1,0 +1,323 @@
+/* Page background */
+body {
+    background-color: #F5F5F5;
+}
+
+/* Hero / title section */
+.itinerary-hero {
+    background: linear-gradient(135deg, #A4C8DB 0%, #7BADC9 100%);
+    padding: 3rem 0 2rem;
+    text-align: center;
+}
+
+.itinerary-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a1a1a; 
+}
+
+/* Wrapper */
+.itinerary-wrapper {
+    padding: 2rem 0 4rem;
+}
+
+/* Details card */
+.itinerary-details-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin-bottom: 2rem;
+}
+
+.itinerary-details-form {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr auto;
+    gap: 1.25rem;
+    align-items: flex-end;
+}
+
+.details-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.details-field label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #444;
+}
+
+.details-field input {
+    padding: 0.7rem 0.9rem;
+    border-radius: 6px;
+    border: 1px solid #d0d7de;
+    font-size: 0.95rem;
+    font-family: inherit;
+}
+
+.details-field input:focus {
+    outline: none;
+    border-color: #2B6D84;
+}
+
+.details-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.details-save-btn {
+    background-color: #2B6D84;
+    color: #ffffff;
+    padding: 0.8rem 1.6rem;
+    border-radius: 6px;
+}
+
+.details-saved-text {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Layout: days + summary */
+.itinerary-layout {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 2rem;
+}
+
+/* Day columns */
+.days-columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.day-column {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem 1.5rem;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.day-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #2B6D84;
+    color: #ffffff;
+}
+
+.btn-secondary {
+    background-color: #e0e4ea;
+    color: #1a1a1a;
+}
+
+.btn-add-activity {
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    border-radius: 6px;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.btn-small {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+/* Activity form */
+.activity-form {
+    margin-top: 0.25rem;
+    border-radius: 8px;
+    background-color: #f6f8fb;
+    padding: 0.75rem;
+}
+
+.activity-form.hidden {
+    display: none;
+}
+
+.activity-form .form-row {
+    margin-bottom: 0.5rem;
+}
+
+.activity-form input {
+    width: 100%;
+    padding: 0.5rem 0.7rem;
+    border-radius: 6px;
+    border: 1px solid #ccd2dd;
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+
+.activity-form input:focus {
+    outline: none;
+    border-color: #2B6D84;
+}
+
+.activity-form .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+/* Activities list */
+.activities-list {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Activity card */
+.activity-card {
+    border-radius: 10px;
+    border: 1px solid #dde2eb;
+    padding: 0.75rem 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background-color: #ffffff;
+}
+
+.activity-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.activity-time-title {
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+}
+
+.activity-time-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.activity-title-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.activity-location-text {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.activity-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.25rem;
+}
+
+.activity-cost-text {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.activity-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.icon-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+/* Summary card */
+.summary-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    height: fit-content;
+}
+
+.summary-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.summary-btn {
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    border-radius: 6px;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.outline-btn {
+    background-color: #ffffff;
+    border: 1px solid #2B6D84;
+    color: #2B6D84;
+}
+
+.primary-btn {
+    background-color: #2B6D84;
+    color: #ffffff;
+}
+
+.summary-primary-btn {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.85rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    background-color: #1f6b82;  /* same tone as other buttons */
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+.summary-primary-btn:hover { 
+    filter: brightness(0.95);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .itinerary-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-card {
+        max-width: 320px;
+        margin-top: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .itinerary-details-form {
+        grid-template-columns: 1fr;
+    }
+
+    .days-columns {
+        grid-template-columns: 1fr;
+    }
+}

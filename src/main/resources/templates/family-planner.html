@@ -13,8 +13,8 @@ body {
 
 /* --- New Header Styling --- */
 .app-header {
-    background: #c9f0e8; /* Matches body background */
-    padding: 40px 20px 0 20px; /* Top padding, no bottom padding */
+    background: #c9f0e8; 
+    padding: 40px 20px 0 20px;
     text-align: center;
 }
 .app-header h1 {
@@ -27,7 +27,7 @@ body {
     font-size: 1.2em;
     color: #333;
     margin: 0;
-    padding-bottom: 30px; /* Space below the subtitle */
+    padding-bottom: 30px;
 }
 /* ------------------------- */
 
@@ -94,15 +94,17 @@ input {
     border-radius: 6px;
 }
 
-.set-btn, .view-btn {
+
+.set-btn, .view-btn, .delete-btn {
     background: #0b637b;
     color: white;
-    padding: 10px 24px;
+    padding: 8px 20px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    width: 100%;
+    width: auto;
 }
+
 
 .full-width-section {
     max-width: 1200px;
@@ -132,11 +134,6 @@ input {
     font-size: 1.1em;
 }
 
-.view-btn {
-    width: auto; 
-    padding: 8px 20px;
-}
-
 label {
     display:inline-block;
     width:100px;
@@ -151,6 +148,7 @@ label {
 }
 </style>
 </head>
+
 <body>
 
 <header class="app-header">
@@ -161,7 +159,7 @@ label {
 <section class="main">
     <div class="left-column">
         <div class="card create" id="createCard">
-            <h2>Create New Plan</h2>
+            <h2>Trip Plan</h2>
             <div class="chart">
                 <div class="circle"></div>
                 <p class="total-text" id="totalBudget">Total<br>$0.00</p>
@@ -172,14 +170,14 @@ label {
                 <button class="set-btn" type="submit">Add Trip</button>
             </form>
         </div>
-
-        </div>
+    </div>
 
     <div class="right-column">
         <div class="card budget" id="budgetCard">
             <h2>Budget Overview</h2>
             <form id="budgetForm">
-                <input type="hidden" name="index">
+                            <input type="hidden" name="id">
+                            <input type="hidden" name="allocBudget">
                 <div><label>Flights:</label><input type="number" name="flights" value="0"></div>
                 <div><label>Lodging:</label><input type="number" name="lodging" value="0"></div>
                 <div><label>Food:</label><input type="number" name="food" value="0"></div>
@@ -194,11 +192,17 @@ label {
     <div id="tripList"></div>
 </div>
 
+</body>
+</html>
+
+
+
+
 
 <script>
-const apiBase = 'http://localhost:8080/family-planner/api';
+const apiBase = '/family-planner/api';
 
-// Fetch and render trips
+// Load all trips
 async function loadTrips() {
     try {
         const res = await fetch(apiBase);
@@ -209,7 +213,29 @@ async function loadTrips() {
     }
 }
 
-// Render trips in the page
+// When the user starts creating a new trip, show zero in the budget circle
+const createForm = document.getElementById('addTripForm');
+if (createForm) {
+    createForm.addEventListener('focusin', () => {
+        const circle = document.getElementById('totalBudget');
+        if (circle) circle.innerHTML = 'Total<br>$0.00';
+    });
+}
+
+// Render the budget circle for a specific plan: show trip name, allocated total, and remaining budget
+function renderBudgetCircle(trip) {
+    const circle = document.getElementById('totalBudget');
+    if (!circle || !trip) return;
+
+    const total = parseFloat(trip.totalBudget || 0);
+    const spent = (parseFloat(trip.flights || 0) + parseFloat(trip.lodging || 0) + parseFloat(trip.food || 0) + parseFloat(trip.activities || 0)) || 0;
+    const remaining = total - spent;
+
+    const name = trip.tripName || 'Trip';
+    circle.innerHTML = `${name}<br>$${total.toFixed(2)}<br><small>Remaining: $${remaining.toFixed(2)}</small>`;
+}
+
+// Render trips on screen
 function renderTrips(trips) {
     const tripList = document.getElementById('tripList');
     tripList.innerHTML = '';
@@ -217,32 +243,42 @@ function renderTrips(trips) {
     trips.forEach((trip, index) => {
         const card = document.createElement('div');
         card.className = 'card trip-card';
+
         card.innerHTML = `
             <div class="trip-info">
-                <strong>${trip.tripName}</strong>
-                <span>| Status: ${trip.status}</span>
-                <span>| Budget: $${trip.budget.toFixed(2)}</span>
+                <div class="trip-title">${trip.tripName}</div>
+                <div class="trip-sub">
+                    Status: <strong>${trip.status}</strong> | 
+                    Budget: <strong>$${(trip.totalBudget || 0).toFixed(2)}</strong>
+                </div>
             </div>
+
             <div class="button-group">
                 <button class="view-btn">View</button>
-                <button class="view-btn delete-btn">Delete</button>
+                <button class="delete-btn">Delete</button>
             </div>
         `;
+
         tripList.appendChild(card);
 
-        // View button
+        // VIEW button — populate form with plan id and values
         card.querySelector('.view-btn').addEventListener('click', () => {
-            document.querySelector('#budgetForm input[name="index"]').value = index;
-            document.querySelector('#budgetForm input[name="flights"]').value = trip.flights;
-            document.querySelector('#budgetForm input[name="lodging"]').value = trip.lodging;
-            document.querySelector('#budgetForm input[name="food"]').value = trip.food;
-            document.querySelector('#budgetForm input[name="activities"]').value = trip.activities;
+            document.querySelector('#budgetForm input[name="id"]').value = trip.id || '';
+            document.querySelector('#budgetForm input[name="allocBudget"]').value = trip.totalBudget || 0;
+            document.querySelector('#budgetForm input[name="flights"]').value = trip.flights || 0;
+            document.querySelector('#budgetForm input[name="lodging"]').value = trip.lodging || 0;
+            document.querySelector('#budgetForm input[name="food"]').value = trip.food || 0;
+            document.querySelector('#budgetForm input[name="activities"]').value = trip.activities || 0;
+
+            // Update budget circle to show selected trip name, allocated budget and remaining
+            renderBudgetCircle(trip);
         });
 
-        // Delete button
+        // DELETE button
         card.querySelector('.delete-btn').addEventListener('click', async () => {
             try {
-                await fetch(`${apiBase}/${index}`, { method: 'DELETE' });
+                await fetch(`${apiBase}/${trip.id}`, { method: 'DELETE' });
+                alert("Trip deleted!");
                 loadTrips();
             } catch (err) {
                 console.error('Error deleting trip:', err);
@@ -250,30 +286,16 @@ function renderTrips(trips) {
         });
     });
 
-
-
-    // Update total budget
-    const total = trips.reduce((sum, t) => sum + (t.budget || 0), 0);
-    document.getElementById('totalBudget').innerHTML = `Total<br>$${total.toFixed(2)}`;
-
-    // Adjust card heights
-    const createCard = document.getElementById('createCard');
-    const budgetCard = document.getElementById('budgetCard');
-    if (window.innerWidth > 900) {
-        createCard.style.height = budgetCard.style.height = 'auto';
-        const maxHeight = Math.max(createCard.offsetHeight, budgetCard.offsetHeight);
-        createCard.style.height = budgetCard.style.height = maxHeight + 'px';
-    } else {
-        createCard.style.height = budgetCard.style.height = 'auto';
-    }
+    // keep budget circle at $0.00 unless a trip is selected via View
 }
 
 // Add new trip
 document.querySelector('#addTripForm').addEventListener('submit', async e => {
     e.preventDefault();
     const form = e.target;
+
     const tripName = form.tripName.value;
-    const budget = parseFloat(form.budget.value) || 0;
+    const totalBudget = parseFloat(form.budget.value) || 0;
 
     if (tripName) {
         try {
@@ -283,7 +305,7 @@ document.querySelector('#addTripForm').addEventListener('submit', async e => {
                 body: JSON.stringify({
                     tripName,
                     status: 'Planning',
-                    budget,
+                    totalBudget,
                     flights: 0,
                     lodging: 0,
                     food: 0,
@@ -298,25 +320,48 @@ document.querySelector('#addTripForm').addEventListener('submit', async e => {
     }
 });
 
-// Update budget
+// Update budget + alerts + status change
 document.querySelector('#budgetForm').addEventListener('submit', async e => {
     e.preventDefault();
     const form = e.target;
-    const index = form.index.value;
+    const id = form.id.value;
+
+    const flights = parseFloat(form.flights.value) || 0;
+    const lodging = parseFloat(form.lodging.value) || 0;
+    const food = parseFloat(form.food.value) || 0;
+    const activities = parseFloat(form.activities.value) || 0;
+
+    const totalSpent = flights + lodging + food + activities;
+
+    const tripBudget = parseFloat(form.allocBudget.value) || 0;
+
+    let newStatus = totalSpent > tripBudget ? "Locked" : "Planning";
 
     try {
-        await fetch(`${apiBase}/${index}/budget`, {
+        const resp = await fetch(`${apiBase}/${id}/budget`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                flights: parseFloat(form.flights.value) || 0,
-                lodging: parseFloat(form.lodging.value) || 0,
-                food: parseFloat(form.food.value) || 0,
-                activities: parseFloat(form.activities.value) || 0
+                flights,
+                lodging,
+                food,
+                activities,
+                status: newStatus
             })
         });
-        alert('Budget updated!');
+        if (!resp.ok) throw new Error('Update failed');
+        const updated = await resp.json();
+
+        if (totalSpent > tripBudget) {
+            alert("⚠️ Budget Exceeded!");
+        } else {
+            alert("Budget Updated Successfully!");
+        }
+
+        // Update circle to reflect remaining after update
+        renderBudgetCircle(updated);
         loadTrips();
+
     } catch (err) {
         console.error('Error updating budget:', err);
     }
@@ -324,13 +369,7 @@ document.querySelector('#budgetForm').addEventListener('submit', async e => {
 
 // Initial load
 loadTrips();
-
-// Adjust card height on resize
-window.addEventListener('resize', loadTrips);
 </script>
-
-
-
 
 </body>
 </html>

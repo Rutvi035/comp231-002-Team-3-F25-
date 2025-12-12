@@ -18,17 +18,17 @@ public class FamilyPlannerController {
         this.plannerService = plannerService;
     }
 
-    // --- 1. Thymeleaf page ---
+    // Thymeleaf page
     @GetMapping
     public String viewPage(Model model) {
         List<FamilyPlan> plans = plannerService.getPlans();
         model.addAttribute("plans", plans);
-        double totalBudget = plans.stream().mapToDouble(FamilyPlan::getBudget).sum();
+        double totalBudget = plans.stream().mapToDouble(FamilyPlan::getTotalBudget).sum();
         model.addAttribute("totalBudget", totalBudget);
         return "family-planner";
     }
 
-    // --- 2. REST endpoints ---
+    // REST endpoints
     @RestController
     @RequestMapping("/family-planner/api")
     public class FamilyPlannerRest {
@@ -40,28 +40,24 @@ public class FamilyPlannerController {
 
         @PostMapping
         public FamilyPlan addPlan(@RequestBody FamilyPlan plan) {
-            plannerService.addPlan(plan);
-            return plan;
+            return plannerService.addPlan(plan);
         }
 
-        @PutMapping("/{index}/budget")
-        public FamilyPlan updateBudget(@PathVariable int index, @RequestBody FamilyPlan budgetData) {
-            FamilyPlan plan = plannerService.getPlans().get(index);
+        @PutMapping("/{id}/budget")
+        public FamilyPlan updateBudget(@PathVariable String id, @RequestBody FamilyPlan budgetData) {
+            FamilyPlan plan = plannerService.getPlan(id);
             plan.setFlights(budgetData.getFlights());
             plan.setLodging(budgetData.getLodging());
             plan.setFood(budgetData.getFood());
             plan.setActivities(budgetData.getActivities());
-            plan.setBudget(plan.getFlights() + plan.getLodging() + plan.getFood() + plan.getActivities());
-            return plan;
+
+            return plannerService.updatePlan(plan);
         }
 
-        // ✅ DELETE endpoint
-        @DeleteMapping("/{index}")
-        public void deletePlan(@PathVariable int index) {
-            List<FamilyPlan> plans = plannerService.getPlans();
-            if (index >= 0 && index < plans.size()) {
-                plans.remove(index);
-            }
+        // DELETE endpoint by id
+        @DeleteMapping("/{id}")
+        public void deletePlan(@PathVariable String id) {
+            plannerService.deletePlan(id);
         }
     }
 }
